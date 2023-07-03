@@ -36,8 +36,6 @@ public class OncologyScreeningMetadata extends AbstractMetadataBundle {
 		    "be5c5602-0a1d-11eb-9e20-37d2e56925ee"));
 		this.install(CoreConstructors.form("Family cancer history form", "Family cancer history form for oncology",
 		    "b9c51a7e-0e24-11eb-9559-13c33ac53eec", "1.0", "dd0e4f3c-0e24-11eb-aa70-bb2cf351b19b"));
-		this.install(CoreConstructors.form("Cancer treatment form", "Cancer treatment form",
-		    "d029ec12-6bae-11eb-b775-0f590ebc4940", "1.0", "03f8d332-6baf-11eb-b344-93a63e368991"));
 	}
 	
 	public static final class _EhrForms {

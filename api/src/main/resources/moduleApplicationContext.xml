@@ -105,19 +105,7 @@
         <property name="icon" value="kenyaui:forms/generic.png" />
         <property name="htmlform" value="oncologyapp:oncologyScreening.html" />
     </bean>
-
-    <bean id="oncologyapp.cancer.form.treatment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-        <property name="targetUuid" value="03f8d332-6baf-11eb-b344-93a63e368991" />
-        <property name="apps">
-            <set>
-                <ref bean="oncologyapp.app.oncologyapp" />
-            </set>
-        </property>
-        <property name="icon" value="kenyaui:forms/generic.png" />
-        <property name="htmlform" value="oncologyapp:oncologyTreatment.html" />
-    </bean>
-
-    <bean id="oncologyapp.cancer.report.ever.screened" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+     <bean id="oncologyapp.cancer.report.ever.screened" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
         <property name="targetUuid" value="7f1c010c-08d0-11eb-9e55-a7fb8b2b1319" />
         <property name="name" value="Patients ever screened for cancer" />
         <property name="calculation" value="org.openmrs.module.oncologyapp.calculation.InOncologyProgramCalculation" />
@@ -127,7 +115,6 @@
         <property name="commonVisitForms">
             <set>
                 <ref bean="oncologyapp.cancer.form.screening" />
-                <ref bean="oncologyapp.cancer.form.treatment" />
             </set>
         </property>
        <!-- <property name="commonPatientForms">

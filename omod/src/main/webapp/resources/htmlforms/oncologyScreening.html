@@ -12,8 +12,38 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
 -->
 <htmlform>
+    <!--Wizard plugins-->
+    <link rel="stylesheet" href="../moduleResources/oncologyapp/styles/smart_wizard.css" type="text/css" ></link>
+    <script type="text/javascript" src="../moduleResources/oncologyapp/scripts/jquery.smartWizard.js"></script>
     <script type="text/javascript">
         jq(document).ready(function () {
+            jq('#oncology').smartWizard({
+                selected: 0,  // Selected Step, 0 = first step
+                keyNavigation: true, // Enable/Disable key navigation(left and right keys are used if enabled)
+                enableAllSteps: false,  // Enable/Disable all steps on first load
+                transitionEffect: 'fade', // Effect on navigation, none/fade/slide/slideleft
+                contentURL:null, // specifying content url enables ajax content loading
+                contentURLData:null, // override ajax query parameters
+                contentCache:true, // cache step contents, if false content is fetched always from ajax url
+                cycleSteps: false, // cycle step navigation
+                enableFinishButton: false, // makes finish button enabled always
+                hideButtonsOnDisabled: false, // when the previous/next/finish buttons are disabled, hide them instead
+                errorSteps:[],    // array of step numbers to highlighting as error steps
+                labelNext:'Next', // label for Next button
+                labelPrevious:'Previous', // label for Previous button
+                labelFinish:'Submit',  // label for Finish button
+                noForwardJumping:false,
+                ajaxType: 'POST',
+// Events
+                onLeaveStep:onLeaveStepValidation , // triggers when leaving a step
+                onShowStep: null,  // triggers when showing a step
+                onFinish: submitHtmlForm,  // triggers when Finish button is clicked
+                buttonOrder: ['finish', 'next', 'prev']  // button order, to hide a button remove it from the list
+            });
+//Wizard set error function
+            function setError(stepnumber){
+                jq('#oncology').smartWizard('setError',{stepnum:stepnumber,iserror:true});
+            }
             disableDivTagsWhenFormLoads();
             getTypeOfCancerPickedToToggleResponses();
             getClickEventOnCancerType();
@@ -859,6 +889,45 @@
             });
         }
 
+        //Smart wizard validations
+        function onLeaveStepValidation (obj, context) {
+            var stepNumFrom = context.fromStep;
+            var stepNumTo = context.toStep;
+//Validations steps
+            if (stepNumFrom == 1)  {
+                return step1Validation();
+            }
+            else if (stepNumFrom == 2 &amp;&amp; stepNumTo &gt; stepNumFrom) {
+                return step2Validation();
+            }
+            else if (stepNumFrom == 3 &amp;&amp; stepNumTo &gt; stepNumFrom) {
+                return step3Validation();
+            }
+            else if (stepNumFrom == 4 &amp;&amp; stepNumTo &gt; stepNumFrom) {
+                return step4Validation();
+            }
+            else {
+
+                return true;
+            }
+        }
+        function step1Validation(){    //Step 1 validations
+                jq('#oncology').smartWizard('showMessage',"");
+                return true;
+        }
+        function step2Validation(){    //Step 2 validations
+            jq('#oncology').smartWizard('showMessage',"");
+            return true;
+        }
+        function step3Validation(){    //Step 2 validations
+            jq('#oncology').smartWizard('showMessage',"");
+            return true;
+        }
+        function step4Validation(){    //Step 3 validations
+            jq('#oncology').smartWizard('showMessage',"");
+            return true;
+        }
+
     </script>
     <style>
         table.screening {
@@ -873,44 +942,67 @@
             text-align: left;
         }
     </style>
-    <div class="ke-form-header">
-        <table style="width: 100%" cellspacing="0" cellpadding="0">
-            <tr>
-                <td>Date:
-                    <encounterDate id="encounter-date" showTime="true"/>
-                </td>
-                <td>Enrolled by:
-                    <encounterProvider default="currentUser"/>
-                </td>
-                <td>Location:
-                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
-                </td>
-            </tr>
-        </table>
-        <table>
-            <includeIf velocityTest="$patient.age  > 1 ">
-                <tr>
-                    <td>Birth certificate number</td>
-                    <td>
-                        <patient id="bcn" field="identifier"
-                                 identifierTypeId="6930e8ce-6ba6-11eb-9e03-6f68aa00888f"
-                                 required="false"/>
-                    </td>
-                </tr>
-            </includeIf>
-        </table>
-    </div>
-    <div class="ke-form-content">
-        <div id="tab-wrap">
-            <div id="tabs">
-                <ul>
-                    <li><a href="#tabs-1">History of Risk Factors</a></li>
-                    <li><a href="#tabs-2">Signs and Symptoms</a></li>
-                    <li><a href="#tabs-3">Cancer Screening</a></li>
-                    <li><a href="#tabs-4">Follow Up</a></li>
-                </ul>
-                <div id="tabs-1">
-                    <div class="ke-form-content">
+    <div id="oncology" class="swMain">
+        <ifMode mode="ENTER">
+            <ul>
+                <li><a href="#step-1">
+                    <label class="stepNumber">1</label>
+                    <span class="stepDesc">History<br /></span>
+                </a></li>
+                <li><a href="#step-2">
+                    <label class="stepNumber">2</label>
+                    <span class="stepDesc">Symptoms<br /></span>
+                </a></li>
+                <li><a href="#step-3">
+                    <label class="stepNumber">3</label>
+                    <span class="stepDesc">Screening<br /></span>
+                </a></li>
+                <li><a href="#step-4">
+                    <label class="stepNumber">4</label>
+                    <span class="stepDesc">Follow Up<br /></span>
+                </a></li>
+            </ul>
+        </ifMode>
+        <ifMode mode="EDIT">
+            <ul class="patient-details">
+                <li><a href="#step-1">
+                    <label class="stepNumber">1</label>
+                    <span class="stepDesc">History of Risk Factors<br /></span>
+                </a></li>
+                <li><a href="#step-2">
+                    <label class="stepNumber">2</label>
+                    <span class="stepDesc">Signs and Symptoms<br /></span>
+                </a></li>
+                <li><a href="#step-3">
+                    <label class="stepNumber">3</label>
+                    <span class="stepDesc">Cancer Screening<br /></span>
+                </a></li>
+                <li><a href="#step-4">
+                    <label class="stepNumber">4</label>
+                    <span class="stepDesc">Follow Up<br /></span>
+                </a></li>
+            </ul>
+        </ifMode>
+
+        <div class="ke-form-content">
+            <!--Wizard Step 1-->
+            <div id="step-1">
+                <h2 class="StepTitle">Visit details</h2>
+             <div class="ke-form-header">
+                 <table style="width: 100%" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>Date:
+                                <encounterDate id="encounter-date" showTime="true"/>
+                            </td>
+                            <td>Enrolled by:
+                                <encounterProvider default="currentUser"/>
+                            </td>
+                            <td>Location:
+                                <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                            </td>
+                        </tr>
+                  </table>
+               </div>
                         <fieldset>
                             <legend>
                                 History Of Risk Factors
@@ -1051,11 +1143,11 @@
                                 </tbody>
                             </table>
                         </fieldset>
-                    </div>
-                </div>
 
-                <div id="tabs-2">
-                    <div class="ke-form-content">
+        </div>    <!--.step 1-->
+        <!--.step 2-->
+        <div id="step-2">
+            <h2 class="StepTitle">Signs and Symptoms</h2>
                         <fieldset>
                             <legend>
                                 Common Signs and Symptoms
@@ -1149,11 +1241,10 @@
 
                         </fieldset>
 
-                    </div>
-                </div>
+            </div>   <!--.step 2-->
+        <div id="step-3">
+            <h2 class="StepTitle">Cancer Screening</h2>
 
-                <div id="tabs-3">
-                    <div class="ke-form-content">
                         <fieldset>
                             <legend>Cancer Screening</legend>
 
@@ -1275,10 +1366,10 @@
                                                             <br/>
                                                             <div id="leepOptions">
                                                                 <b>Loop electrosurgical excision</b><br/>
-                                                                <obs conceptId="162810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                     answerConceptIds="8329d974-5371-4fb0-98da-762da897ef72,d1d9a2a0-2ae7-4bf1-970a-0c6f51d67428,b4fe108d-c980-4451-99fb-6ef42e9a8dcc"
-                                                                     answerLabels="LEEP performed SVA,LEEP postponed,Referred for LEEP"
-                                                                     style="dropdown"/>
+                                                                <!--<obs conceptId="162810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                                                     <!--answerConceptIds="8329d974-5371-4fb0-98da-762da897ef72,d1d9a2a0-2ae7-4bf1-970a-0c6f51d67428,b4fe108d-c980-4451-99fb-6ef42e9a8dcc"-->
+                                                                     <!--answerLabels="LEEP performed SVA,LEEP postponed,Referred for LEEP"-->
+                                                                     <!--style="dropdown"/>-->
                                                                 <br/>
                                                             </div>
                                                             <br/>
@@ -1575,11 +1666,11 @@
 
                                                     <th>Colonoscopy</th>
                                                     <td>
-                                                        <obs conceptId="161166AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"
-                                                             answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148910AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118606AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,aed393be-c64e-4950-b4d6-9e1ce413d2ac"
-                                                             answerLabels="No abnormality,Polyps,Suspicoius for cancer,Inflammation,Other abnormalities"
-                                                             style="radio" id="colonoscopyFindings"/>
+                                                        <!--<obs conceptId="161166AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                                             <!--labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"-->
+                                                             <!--answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148910AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118606AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,aed393be-c64e-4950-b4d6-9e1ce413d2ac"-->
+                                                             <!--answerLabels="No abnormality,Polyps,Suspicoius for cancer,Inflammation,Other abnormalities"-->
+                                                             <!--style="radio" id="colonoscopyFindings"/>-->
                                                     </td>
 
                                                     <td>
@@ -1617,11 +1708,11 @@
                                                     <th rowspan="2">Retinoblastoma</th>
                                                     <th>EUA(Examination Under Anesthesia)</th>
                                                     <td>
-                                                        <obs conceptId="164051AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabels="Normal,Abnormal" style="radio"
-                                                             answerSeparator="&lt;br/&gt;"
-                                                             id="euaFindings"/>
+                                                        <!--<obs conceptId="164051AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                                             <!--answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                                             <!--answerLabels="Normal,Abnormal" style="radio"-->
+                                                             <!--answerSeparator="&lt;br/&gt;"-->
+                                                             <!--id="euaFindings"/>-->
                                                     </td>
                                                     <td>
                                                         <div id="euaNormalTreatmentOptions">
@@ -1798,11 +1889,11 @@
                                             <tr id="oralCytology">
                                                 <th>Cytology</th>
                                                 <td>
-                                                    <obs conceptId="161199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabels="Normal,  Abnormal" style="radio"
-                                                         id="cytologyFindings"
-                                                         answerSeparator="&lt;br/&gt;"/>
+                                                    <!--<obs conceptId="161199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                                         <!--answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                                         <!--answerLabels="Normal,  Abnormal" style="radio"-->
+                                                         <!--id="cytologyFindings"-->
+                                                         <!--answerSeparator="&lt;br/&gt;"/>-->
                                                 </td>
                                                 <td>
                                                     <div id="cytologyNormalTreatmentOptions">
@@ -1900,11 +1991,10 @@
                                 </tbody>
                             </table>
                         </fieldset>
-                    </div>
-                </div>
-
-                <div id = "tabs-4">
-                    <div class = "ke=form-content">
+            <!--.step 3 -->
+        </div>
+        <div id="step-4">
+            <h2 class="StepTitle">Follow Up</h2>
                         <fieldset>
                             <legend> Follow Up </legend>
                             <table class="screening" width="75%" cellpadding="0" cellspacing="0" align="center">
@@ -1943,14 +2033,12 @@
                                 </tr>
                                 </tbody>
                             </table>
-
                         </fieldset>
                     </div>
                 </div>
-                <div class="ke-form-footer">
+        <div class="ke-form-footer" style="display: none">
                     <submit/>
                 </div>
             </div>
-        </div>
-    </div>
+
 </htmlform>
