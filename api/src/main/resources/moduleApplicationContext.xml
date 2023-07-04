@@ -100,6 +100,8 @@
             <set>
                 <ref bean="oncologyapp.app.oncologyapp" />
                 <ref bean="kenyaemr.app.registration" />
+                <ref bean="kenyaemr.app.intake"/>
+                <ref bean="kenyaemr.app.clinician" />
             </set>
         </property>
         <property name="icon" value="kenyaui:forms/generic.png" />
