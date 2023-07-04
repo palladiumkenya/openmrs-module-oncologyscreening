@@ -967,15 +967,15 @@
             <ul class="patient-details">
                 <li><a href="#step-1">
                     <label class="stepNumber">1</label>
-                    <span class="stepDesc">History of Risk Factors<br /></span>
+                    <span class="stepDesc">History<br /></span>
                 </a></li>
                 <li><a href="#step-2">
                     <label class="stepNumber">2</label>
-                    <span class="stepDesc">Signs and Symptoms<br /></span>
+                    <span class="stepDesc">Symptoms<br /></span>
                 </a></li>
                 <li><a href="#step-3">
                     <label class="stepNumber">3</label>
-                    <span class="stepDesc">Cancer Screening<br /></span>
+                    <span class="stepDesc">Screening<br /></span>
                 </a></li>
                 <li><a href="#step-4">
                     <label class="stepNumber">4</label>
@@ -1060,7 +1060,7 @@
                                     <td>Do you take Alcohol</td>
                                     <td>
                                         <obs conceptId="159449AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,158939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,167155AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabels="Yes,No,Stopped" style="radio"/>
                                     </td>
                                 </tr>
@@ -1084,7 +1084,7 @@
                                     <td>Previous Cancer Treatment</td>
                                     <td>
                                         <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptId="152520AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptId="166917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabel="Chemotherapy"
                                              style="checkbox"/>
                                         <br/>
@@ -1094,7 +1094,7 @@
                                              style="checkbox"/>
                                         <br/>
                                         <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptId="0c22e88e-f339-4b44-92a9-0c95dd91a4ff"
+                                             answerConceptId="160345AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabel="Hormonal therapy"
                                              style="checkbox"/>
                                         <br/>
@@ -1111,7 +1111,7 @@
                                              answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other"
                                              style="checkbox"/>
                                         <br/>
-                                        <obs conceptId="bda9951d-1b38-47e9-962f-6c85485b9331"/>
+                                        <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -1212,7 +1212,7 @@
                                                  answerLabel="Chronic cough" style="checkbox"/>
                                             <br/>
                                             <obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                 answerConceptId="125052AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                 answerConceptId="115779AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  answerLabel="Persistent headaches" style="checkbox"/>
                                             <br/>
                                             <obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1232,7 +1232,7 @@
                                                  answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  id="other-common-symtops"/>
                                             <br/>
-                                            <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            <obs conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  id="other-symptom-text"/>
                                         </td>
                                     </tr>
@@ -1258,10 +1258,10 @@
                                     <td colspan="2">Visit type
 
                                         <div class="requiredInput">
-                                            <obs conceptId="164181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                 answerConceptIds="164180AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,bbd5d81e-d694-48e6-a948-ed82e63e2030,d6dbc59d-26ea-459e-be4a-75b89c9210ae"
-                                                 answerLabels="Initial screening,Repeat screening, Post-Treatment screening"
-                                                 style="radio"/>
+                                            <obs id="visit_type" conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                 answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161236AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165381,1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165382"
+                                                 answerLabels="Initial visit,Routine visit,Post treatment visit,Treatment visit,Post treatment complication"
+                                                 style="radio" required="true" />
                                         </div>
                                     </td>
 
@@ -1270,7 +1270,7 @@
                                     <td colspan="2">
                                         Cancer type:
                                         <obs conceptId="116030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptIds="116023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116026AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127527AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,146221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115355AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1be9b3bb-40dc-44bb-97c8-13824287f3cb"
+                                             answerConceptIds="116023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116026AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127527AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,146221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115355AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabels="Cervical,Breast,Colorectal,Retinoblastoma,Prostate,Oral cancer,Other"
                                              style="radio" id="cancerType"/>
                                     </td>
@@ -1288,169 +1288,189 @@
                                             <includeIf velocityTest="$patient.gender == 'F' ">
                                                 <tr id="cervicalHpv">
                                                     <th rowspan="4">Cervical</th>
-                                                    <th>HPV</th>
+                                                 <obsgroup groupingConceptId="159859AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                                    <td>
+                                                        <obs id="screening_method" conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="159859AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="HPV"  /> </td>
+
                                                     <td valign="top">
-                                                        <obs conceptId="159859AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabels="Negative,Positive" style="radio"
+                                                        <obs conceptId="164934"
+                                                             answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159393AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabels="Negative,Positive,Presumed Cancer" style="radio"
                                                              answerSeparator="&lt;br/&gt;" id="hpvResponses"/>
                                                     </td>
                                                     <td valign="top">
                                                         <div id="hpvTreatmentForNegativeResults">
-                                                            <obs conceptId="62a2e091-688e-40f4-b70f-dab1aef62388"
-                                                                 answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
+                                                            <obs conceptId="165070"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Counseled on negative results"
                                                                  style="checkbox"/>
                                                             <br/>
-                                                            <obs conceptId="62a2e091-688e-40f4-b70f-dab1aef62388"
-                                                                 answerConceptId="c8c67930-1002-4637-be09-755560fd8452"
+                                                            <obs conceptId="166663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Re-screen after 5 years"
                                                                  style="checkbox"/>
                                                             <br/>
-                                                            <obs conceptId="62a2e091-688e-40f4-b70f-dab1aef62388"
-                                                                 answerConceptId="13be60bf-28ac-44b7-a847-4f1c24f2afa6"
+                                                            <obs conceptId="165086"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Re-screening after 2 years"
                                                                  style="checkbox"/>
                                                         </div>
 
                                                         <hr/>
                                                         <div id="hpvTreatmentForPositiveResults">
-                                                            <obs conceptId="62a2e091-688e-40f4-b70f-dab1aef62388"
-                                                                 answerConceptId="73e82dc9-f73a-47a8-b4e6-fdf3c1f4b73f"
+                                                            <obs conceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Do a VIA or colposcopy" style="checkbox"/>
                                                         </div>
                                                     </td>
+                                                 </obsgroup>
                                                 </tr>
 
                                                 <tr id="cervicalVia">
-
-                                                    <th>VIA/VILI</th>
+                                               <obsgroup groupingConceptId="164977">
+                                                <td>
+                                                    <obs id="screening_method" conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        answerConceptId="164977"
+                                                        answerLabel="VIA/VILI"  /> </td>
                                                     <td>
-                                                        <obs conceptId="162816AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        <obs conceptId="164934"
                                                              answerSeparator="&lt;br/&gt;"
                                                              answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabels="Negative,Positive,suspicious for cancer"
+                                                             answerLabels="Negative,Positive,Suspicious for cancer"
                                                              style="radio"
                                                              id="viaResponses"/>
                                                     </td>
                                                     <td>
                                                         <div id="viaTreatmentNegativeResults">
-                                                            <obs conceptId="3ddc3275-66c2-40fc-9ed2-12c1725d50f9"
-                                                                 answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
+                                                            <obs conceptId="165070"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Counseled for negative result"
                                                                  style="checkbox"/>
                                                         </div>
+                                                    <br/><br/>
                                                         <hr/>
+                                                        <br/>
                                                         <div id="viaTreatmentPositiveResults">
-                                                            <div id="cryotherapyOptions">
-                                                                <b>Cryotherapy</b><br/>
-                                                                <obs conceptId="a2d67f28-1e66-4199-8f50-067d37a06da7"
-                                                                     answerConceptIds="8329d974-5371-4fb0-98da-762da897ef72,d1d9a2a0-2ae7-4bf1-970a-0c6f51d67428,b4fe108d-c980-4451-99fb-6ef42e9a8dcc,60dbeb18-e599-4276-8252-5eb84641a4a3"
-                                                                     answerLabels="Done single visit approach,Crytotherapy postponed,Referred for cryotherapy,postponed cryotherapy done today"
-                                                                     style="dropdown" id="cryotherapy"/>
-                                                                <br/>
-                                                                Date screening done<br/>
-                                                                <obs conceptId="23f45ac8-613a-4ece-b3d9-ac1697acc2ab"/>
+                                                            <obs id="treatment" conceptId="165266"
+                                                                 answerConceptIds="165385,
+                                                                              165381,
+                                                                              165386,
+                                                                              162810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                              165396,
+                                                                              165395,
+                                                                              159837AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                              165391,
+                                                                              5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                              1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                                                 answerLabels="Cryotherapy performed (single Visit),
+                                                                          Cryotherapy postponed,
+                                                                          Cryotherapy performed (previously postponed),
+                                                                          LEEP performed,
+                                                                          Cold knife cone,
+                                                                          Thermocoagulation,
+                                                                          Hysterectomy,
+                                                                          Referred for cancer treatment,
+                                                                          Other,
+                                                                          None"
+                                                                 style="dropdown" required="true"/>
                                                             </div>
-                                                            <br/>
-                                                            <div id="thermalAblationOptions">
-                                                                <b>Thermal ablation</b><br/>
-                                                                <obs conceptId="d2632d95-4869-4f81-b06f-2a9f6d442853"
-                                                                     answerConceptIds="8329d974-5371-4fb0-98da-762da897ef72,d2632d95-4869-4f81-b06f-2a9f6d442853,d1d9a2a0-2ae7-4bf1-970a-0c6f51d67428,1648AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,60dbeb18-e599-4276-8252-5eb84641a4a3"
-                                                                     answerLabels="Done single visit approach,Thermal ablation,Postponed,Referred for Thermal ablation,Postponed Thermal abilation done today"
-                                                                     style="dropdown"/>
-                                                                <br/>
-                                                                Date screening done<br/>
-                                                                <obs conceptId="23f45ac8-613a-4ece-b3d9-ac1697acc2ab"/>
-                                                            </div>
-                                                            <br/>
-                                                            <div id="leepOptions">
-                                                                <b>Loop electrosurgical excision</b><br/>
-                                                                <!--<obs conceptId="162810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                                                                     <!--answerConceptIds="8329d974-5371-4fb0-98da-762da897ef72,d1d9a2a0-2ae7-4bf1-970a-0c6f51d67428,b4fe108d-c980-4451-99fb-6ef42e9a8dcc"-->
-                                                                     <!--answerLabels="LEEP performed SVA,LEEP postponed,Referred for LEEP"-->
-                                                                     <!--style="dropdown"/>-->
-                                                                <br/>
-                                                            </div>
-                                                            <br/>
-                                                            <div id="otherTreatmentForViaPositive">
-                                                                <b>Other treatment</b><br/>
-                                                                <obs conceptId="57c76c24-baa2-4c12-9f30-b8d192bae1a4"
-                                                                     answerConceptIds="162811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159837AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                     answerLabels="Cone biopsy,Hysterectomy"
-                                                                     style="dropdown"/>
-                                                            </div>
-                                                        </div>
+                                                        <br/>
                                                         <hr/>
+                                                        <br/><br/>
                                                         <div id="viaSuspectForCancerOptions">
-                                                            <obs conceptId="3ddc3275-66c2-40fc-9ed2-12c1725d50f9"
-                                                                 answerConceptId="b4fe108d-c980-4451-99fb-6ef42e9a8dcc"
+                                                            <obs conceptId="166937AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerConceptId="161826AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Perform biopsy and/or refer for further management"
                                                                  style="checkbox"/>
                                                         </div>
-
                                                     </td>
+                                               </obsgroup>
                                                 </tr>
                                                 <tr id="cervicalPapSmear">
+                                             <obsgroup groupingConceptId="885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 
-                                                    <th>Pap smear</th>
+                                                    <td><obs id="screening_method" conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Pap Smear"  /> </td>
                                                     <td>
-                                                        <obs conceptId="885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        <obs conceptId="164934"
                                                              labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"
-                                                             answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145802AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145805AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,122321AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabels="Normal,Atypical squamous cells(ASC-US/ASC-H),Low-grade squamous intraepithelial lesion(LSIL/CIN I),High grade squamous intraepithelial lesion(HSIL/CIN II or III/CIS),AGUS,Invasive cancer"
-                                                             style="radio" id="papsmearResponses"/>
+                                                             answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               145808AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               145805AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               155424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               145822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               155208AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabels="Normal,
+                                                                           Low grade lesion,
+                                                                           High grade lesion,
+                                                                           Invasive Cancer,
+                                                                           Atypical squamous cells(ASC-US/ASC-H),
+                                                                           AGUS,
+                                                                           Other"
+                                                             style="radio" id="papsmearResponses" />
                                                     </td>
                                                     <td>
                                                         <div id="papsmearTreatmentNormalOption">
-                                                            <obs conceptId="a9c51ac1-7f82-4fac-8e21-2ce500fd1991"
-                                                                 answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
+                                                            <obs conceptId="165070"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Counseled on negative results"
                                                                  style="checkbox"/>
                                                             <br/>
-                                                            <obs conceptId="a9c51ac1-7f82-4fac-8e21-2ce500fd1991"
-                                                                 answerConceptId="3c08333f-4266-443b-b51e-b61cda5e3f2a"
+                                                            <obs conceptId="166663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Rescreen every 3-5 years"
                                                                  style="checkbox"/>
                                                         </div>
                                                         <hr/>
+                                                        <br/>
+                                                        Referrals ordered:
                                                         <div id="referColoscopy">
-                                                            <obs conceptId="a9c51ac1-7f82-4fac-8e21-2ce500fd1991"
-                                                                 answerConceptId="dbc25e25-c4df-4504-858a-fa978a8fdcf9"
-                                                                 answerLabel="Refer for colposcopy" style="checkbox"/>
-                                                        </div>
-                                                        <hr/>
-                                                        <div id="referToBiopsy">
-                                                            <obs conceptId="a9c51ac1-7f82-4fac-8e21-2ce500fd1991"
-                                                                 answerConceptId="9b892de0-0551-449c-88d1-470f6618943c"
-                                                                 answerLabel="Refer for biopsy" style="checkbox"/>
+                                                            <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerConceptIds="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161826AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerLabel="Refer for colposcopy,Refer for biopsy" style="dropdown"/>
                                                         </div>
                                                     </td>
+                                             </obsgroup>
                                                 </tr>
                                                 <tr id="cervicalColposcopy">
-                                                    <th>Colposcopy(for positive HPV,VIA or PAP smear)</th>
+                                        <obsgroup groupingConceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
                                                     <td>
-                                                        <obs conceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        <obs id="screening_method" conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Colposcopy(for positive HPV,VIA or PAP smear)"  />
+                                                        </td>
+                                                    <td>
+                                                        <obs conceptId="164934"
                                                              answerSeparator="&lt;br/&gt;"
-                                                             answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabels="Negative,Postive,Suspicious for cancer"
+                                                             answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabels="Normal,Abnormal,Suspicious for cancer, Other"
                                                              style="radio"
                                                              id="colposcopyResponses"/>
                                                     </td>
                                                     <td>
                                                         <div id="colposcopyNegativeResultsTreatmentOptions">
-                                                            <obs conceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                 answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
+                                                            <obs conceptId="165070"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Counsel for negative results"
                                                                  style="checkbox"/>
                                                             <br/>
-                                                            <obs conceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                 answerConceptId="c8c67930-1002-4637-be09-755560fd8452"
-                                                                 answerLabel="Rescreen every 5 years" style="checkbox"/>
+                                                            <obs conceptId="166663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerLabel="Re-screen after 5 years"
+                                                                 style="checkbox"/>
                                                             <br/>
-                                                            <obs conceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                 answerConceptId="13be60bf-28ac-44b7-a847-4f1c24f2afa6"
-                                                                 answerLabel="Rescreen after 2 years" style="checkbox"/>
+                                                            <obs conceptId="165086"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerLabel="Re-screening after 2 years"
+                                                                 style="checkbox"/>
                                                         </div>
                                                         <hr/>
                                                         <div id="colposcopyPositiveResultsTreatmentOptions">
@@ -1485,8 +1505,8 @@
                                                                  style="checkbox"/>
                                                         </div>
                                                     </td>
-                                                </tr>
-
+                                        </obsgroup>
+                                    </tr>
 
                                                 <includeIf velocityTest="$patient.age > 0 ">
                                                     <tr id="breastCbe">
