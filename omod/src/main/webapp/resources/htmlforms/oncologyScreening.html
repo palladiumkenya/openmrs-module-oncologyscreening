@@ -15,7 +15,34 @@
     <!--Wizard plugins-->
     <link rel="stylesheet" href="../moduleResources/oncologyapp/styles/smart_wizard.css" type="text/css" ></link>
     <script type="text/javascript" src="../moduleResources/oncologyapp/scripts/jquery.smartWizard.js"></script>
+    <style>
+        .simple-table {
+            border: solid 1px #DDEEEE;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 13px Arial, sans-serif;
+        }
+
+        .simple-table thead th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            padding: 10px;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+        }
+
+        .simple-table td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 10px;
+            text-shadow: 1px 1px 1px #fff;
+        }
+    </style>
     <script type="text/javascript">
+        var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
+        var HIV_POSITIVE = 703;
+        var LATEST_HTS_RESULT = "<lookup expression="fn.latestObs(159427).getValueCoded().getConceptId()"/>";
         jq(document).ready(function () {
             jq('#oncology').smartWizard({
                 selected: 0,  // Selected Step, 0 = first step
@@ -70,6 +97,15 @@
             processBiradsResponse();
             displayTabs();
 
+            //Validations
+            jq('#other-treatments input').prop("disabled", true);
+            jq('#other-signs-symptoms-text input').prop("disabled", true);
+            getField('parity-term.value').change(onParityChange);
+            getField('parity-abortion.value').change(onParityChange);
+            jq('#smoking-status input').click(onSmokingStatusChange);
+            jq('#previous-treatment :input[type=checkbox]').change(onPreviousTreatmentSelected);
+            jq('#signs-symptoms :input[type=checkbox]').change(onSignsSymptomsSelected);
+
 
             function displayTabs() {
                 var tabsObj = jq("#tabs").tabs();
@@ -121,6 +157,12 @@
                 var packYears = Math.round(smokeYears * smokeDays / 20);
 
                 jq('#lValue').html(packYears);
+            }
+
+            if (LATEST_HTS_RESULT == HIV_POSITIVE || PATIENT_IS_ENROLLED_HIV) {
+                jq("#hiv-status input[value=703]").prop("checked", true);
+            } else if (LATEST_HTS_RESULT == NEGATIVE) {
+                jq("#hiv-status input[value=664]").prop("checked", true);
             }
         });
 
@@ -889,6 +931,71 @@
             });
         }
 
+        //Validations - 2
+        function onSmokingStatusChange() {
+            if (getValue('smoking-status.value') == 1066) {
+                jq('#smokeYears input').prop("disabled", true);
+                jq('#smokeDays input').prop("disabled", true);
+                jq('#smokeYears input').val('');
+                jq('#smokeDays input').val('');
+            } else {
+                jq('#smokeYears input').prop("disabled", false);
+                jq('#smokeDays input').prop("disabled", false);
+            }
+        }
+
+        var onPreviousTreatmentSelected = function(){
+            var val = jq(this).val();
+            var previousTreatmentChecked = jq("#previous-treatment input:checkbox:checked");
+            if(val == 1107 &amp;&amp; previousTreatmentChecked.length ==1){
+                jq("#previous-treatment input[type=checkbox]").prop("disabled",true);
+                jq(this).prop("disabled",false);
+            }else {
+                jq("#previous-treatment input[type=checkbox]").prop("disabled",false);
+                jq("#previous-treatment input[value=1107]").prop("disabled",true);
+            }
+            if(previousTreatmentChecked.length ==0){
+                jq("#previous-treatment input[value=1107]").prop("disabled",false);
+            }
+            if(val == 5622){
+                jq('#other-treatments input').prop("disabled", false);
+            }else{
+                jq('#other-treatments input').prop("disabled", true);
+                jq('#other-treatments input').val('');
+            }
+        }
+
+        var onSignsSymptomsSelected = function(){
+            var val = jq(this).val();
+            var signsSymptomsChecked = jq("#signs-symptoms input:checkbox:checked");
+            if(val == 1107 &amp;&amp; signsSymptomsChecked.length ==1){
+                jq("#signs-symptoms input[type=checkbox]").prop("disabled",true);
+                jq(this).prop("disabled",false);
+            }else {
+                jq("#signs-symptoms input[type=checkbox]").prop("disabled",false);
+                jq("#signs-symptoms input[value=1107]").prop("disabled",true);
+            }
+            if(signsSymptomsChecked.length ==0){
+                jq("#signs-symptoms input[value=1107]").prop("disabled",false);
+            }
+            if(val == 5622){
+                jq('#other-signs-symptoms-text input').prop("disabled", false);
+            }else{
+                jq('#other-signs-symptoms-text input').prop("disabled", true);
+                jq('#other-signs-symptoms-text input').val('');
+            }
+        }
+
+        function onParityChange() {
+            var gravida = '';
+            var parityTerm = parseInt(getValue('parity-term.value'));
+            var parityAbortion = parseInt(getValue('parity-abortion.value'));
+            if (!isNaN(parityTerm) &amp;&amp; !isNaN(parityAbortion)) {
+                gravida = parityTerm + parityAbortion;
+                getField('gravida.value').val(gravida);
+            }
+        }
+
         //Smart wizard validations
         function onLeaveStepValidation (obj, context) {
             var stepNumFrom = context.fromStep;
@@ -912,20 +1019,63 @@
             }
         }
         function step1Validation(){    //Step 1 validations
+            var smoking_status =getValue('smoking-status.value');
+            if (smoking_status == false) {
+                jq('#oncology').smartWizard('setError', {stepnum: 1, iserror: true});
+                getField('smoking-status.error').html('Smoking status is required').show();
+                return false;
+            }
+            else {
+                getField('smoking-status.error').html('Smoking status is required').hide();
                 jq('#oncology').smartWizard('showMessage',"");
                 return true;
+            }
         }
         function step2Validation(){    //Step 2 validations
+            var signsSymptomsChecked = jq("#signs-symptoms input:checkbox:checked");
+            if (signsSymptomsChecked.length == 0) {
+                jq('#oncology').smartWizard('setError', {stepnum: 3, iserror: true});
+                getField('signsSymptoms-error.error').html('Please specify any signs and symptoms.').show();
+                return false;
+            }else {
+                getField('signsSymptoms-error.error').html('Please specify any signs and symptoms.').hide();
+                jq('#oncology').smartWizard('showMessage', "");
+                return true;
+            }
+        }
+        function step3Validation(){    //Step 3 validations
+            var visitType =getValue('visit_type.value');
+            if (smoking_status == false) {
+                jq('#oncology').smartWizard('setError', {stepnum: 1, iserror: true});
+                getField('smoking-status.error').html('Smoking status is required').show();
+                return false;
+            }
+            else {
+                getField('smoking-status.error').html('Smoking status is required').hide();
+                jq('#oncology').smartWizard('showMessage',"");
+                return true;
+            }
+        }
+        function step4Validation(){    //Step 4 validations
             jq('#oncology').smartWizard('showMessage',"");
             return true;
         }
-        function step3Validation(){    //Step 2 validations
-            jq('#oncology').smartWizard('showMessage',"");
-            return true;
-        }
-        function step4Validation(){    //Step 3 validations
-            jq('#oncology').smartWizard('showMessage',"");
-            return true;
+
+        clearHiddenSections = function(parentObj) {
+            for(var i=0; i &lt; parentObj.length; i++){
+                parentObj[i].find('input[type=radio]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=checkbox]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=text]').each(function() {
+                    this.val("");
+                });
+                parentObj[i].find('select').each(function() {
+                    this.selectedIndex =0;
+                });
+            }
         }
 
     </script>
@@ -967,15 +1117,15 @@
             <ul class="patient-details">
                 <li><a href="#step-1">
                     <label class="stepNumber">1</label>
-                    <span class="stepDesc">History of Risk Factors<br /></span>
+                    <span class="stepDesc">History<br /></span>
                 </a></li>
                 <li><a href="#step-2">
                     <label class="stepNumber">2</label>
-                    <span class="stepDesc">Signs and Symptoms<br /></span>
+                    <span class="stepDesc">Symptoms<br /></span>
                 </a></li>
                 <li><a href="#step-3">
                     <label class="stepNumber">3</label>
-                    <span class="stepDesc">Cancer Screening<br /></span>
+                    <span class="stepDesc">Screening<br /></span>
                 </a></li>
                 <li><a href="#step-4">
                     <label class="stepNumber">4</label>
@@ -1003,20 +1153,22 @@
                         </tr>
                   </table>
                </div>
-                        <fieldset>
+                   <fieldset>
                             <legend>
                                 History Of Risk Factors
                             </legend>
-                            <table class="screening" style="width: 100%" cellspacing="0" cellpadding="0">
-                                <tbody>
+                            <table class="simple-table">
                                 <tr>
                                     <td>Do you smoke cigarattes</td>
                                     <td>
                                         <obs conceptId="163201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,158939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabels="Yes,No,Stopped" style="radio"/>
-                                        <br/>
-                                        <table id="smokingOptions">
+                                             answerLabels="Yes,No,Stopped" id="smoking-status" style="radio"/>
+                                        <span style="color:red;"><strong>*</strong></span>
+                                        <span class="value"><recentObs conceptId="163201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                                    </td>
+                                    <td>
+                                        <table>
                                             <tr>
                                                 <td>Number of years smoked</td>
                                                 <td>
@@ -1032,94 +1184,90 @@
                                                 </td>
                                             </tr>
                                             <tr id="packYears">
+                                                <td>
                                                 <label for="packYears"><span class="status active"></span>Pack
                                                     Years:</label>
+                                                </td>
+                                                <td>
                                                 <span id="rValue" class="value"></span>
                                                 <span id = "lValue" class = "value"></span>
+                                               </td>
                                             </tr>
                                         </table>
                                     </td>
                                 </tr>
-                                </tbody>
-                            </table>
-                            <table>
-                                <tbody>
                                 <tr>
                                     <td>Do you use other form of tobacco</td>
-                                    <td>
+                                    <td colspan="2">
                                         <obs conceptId="163731AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,158939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabels="Yes,No,Stopped" style="radio"/>
                                     </td>
                                 </tr>
-                                </tbody>
-                            </table>
-                            <table>
-                                <tbody>
                                 <tr>
                                     <td>Do you take Alcohol</td>
-                                    <td>
+                                    <td colspan="2">
                                         <obs conceptId="159449AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,158939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,167155AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabels="Yes,No,Stopped" style="radio"/>
                                     </td>
                                 </tr>
-                                </tbody>
-                            </table>
-                            <table>
-                                <tbody>
                                 <tr>
                                     <td>HIV Status</td>
-                                    <td>
+                                    <td colspan="2">
                                         <obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabels="Positive,Negative,Unknown" style="radio"/>
+                                             answerLabels="Positive,Negative,Unknown" style="radio" id="hiv-status"/>
                                     </td>
                                 </tr>
-                                </tbody>
-                            </table>
-                            <table>
-                                <tbody>
                                 <tr>
                                     <td>Previous Cancer Treatment</td>
-                                    <td>
-                                        <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptId="152520AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabel="Chemotherapy"
-                                             style="checkbox"/>
-                                        <br/>
-                                        <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptId="161174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabel="Radiotherapy"
-                                             style="checkbox"/>
-                                        <br/>
-                                        <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptId="0c22e88e-f339-4b44-92a9-0c95dd91a4ff"
-                                             answerLabel="Hormonal therapy"
-                                             style="checkbox"/>
-                                        <br/>
-                                        <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptId="159619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabel="Surgery"
-                                             style="checkbox"/>
-                                        <br/>
-                                        <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="None"
-                                             style="checkbox"/>
-                                        <br/>
-                                        <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other"
-                                             style="checkbox"/>
-                                        <br/>
-                                        <obs conceptId="bda9951d-1b38-47e9-962f-6c85485b9331"/>
+                                    <td colspan="2">
+                                        <table id="previous-treatment">
+                                            <tr>
+                                                <td colspan="3">
+                                                    <div style="float: left; padding-right: 50px">
+                                                        <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="None"
+                                                             style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="166917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Chemotherapy"
+                                                             style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="161174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Radiotherapy"
+                                                             style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="159619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Surgery"
+                                                             style="checkbox"/>
+                                                        <br/>
+                                                      </div>
+                                                 </td>
+                                                <td>
+                                                <div style="float: left;padding-right: 50px">
+                                                    <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="160345AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Hormonal therapy"
+                                                         style="checkbox"/>
+                                                    <br/>
+                                                    <obs conceptId="162964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other"
+                                                         style="checkbox"/>
+                                                    <br/>
+                                                    <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="other-treatments"/>
+                                                 </div>
+                                              </td>
+                                            </tr>
+                                        </table>
                                     </td>
                                 </tr>
-                                </tbody>
-                            </table>
-                            <table>
-                                <tbody>
                                 <includeIf velocityTest="$patient.gender == 'F' ">
-                                    <tr>
+                                  <tr>
                                         <td>
                                             <div id="hoverText">
                                                 <span title="Parity should not exceed 15 + 15">Female Client</span>
@@ -1127,20 +1275,21 @@
                                         </td>
 
                                         <td>
-                                            <label>Parity:</label> <span id="parity"> <obs  conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                                            + <obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </span>
+                                            <label>Parity:</label> <span id="parity"> <obs  conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="parity-term"/>
+                                            + <obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="parity-abortion"/> </span>
                                         </td>
-
-                                        <br/>
-
-                                        <td>
-                                            LMP date:
+                                      <td>Gravida:
+                                          <obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="gravida"/>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                        <td>LMP date:  </td>
+                                        <td colspan="2">
                                             <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                                         </td>
 
                                     </tr>
                                 </includeIf>
-                                </tbody>
                             </table>
                         </fieldset>
 
@@ -1155,8 +1304,12 @@
 
                             <table class="screening" style="width: 100%" cellspacing="0" cellpadding="0">
                                 <tbody>
-                                    <tr>
-                                        <td>
+                                    <tr id="signs-symptoms">
+                                        <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                 answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                 answerLabel="None"
+                                                 style="checkbox" />
+                                            <br/>
                                             <obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  answerConceptId="111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  answerLabel="Dyspepsia" style="checkbox"/>
@@ -1176,12 +1329,12 @@
                                             <obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  answerConceptId="132667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  answerLabel="Nose Bleeding" style="checkbox"/>
-                                            <br/>
+                                        </td>
+                                        <td>
                                             <obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  answerConceptId="5954AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  answerLabel="Difficulty in swallowing" style="checkbox"/>
-                                        </td>
-                                        <td>
+                                            <br/>
                                             <obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  answerConceptId="832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  answerLabel="Weight loss" style="checkbox"/>
@@ -1212,7 +1365,7 @@
                                                  answerLabel="Chronic cough" style="checkbox"/>
                                             <br/>
                                             <obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                 answerConceptId="125052AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                 answerConceptId="115779AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  answerLabel="Persistent headaches" style="checkbox"/>
                                             <br/>
                                             <obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1224,16 +1377,11 @@
                                                  answerLabel="Post-coital bleeding" style="checkbox"/>
                                             <br/>
                                             <obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                 answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                 answerLabel="None"
-                                                 style="checkbox"/>
-                                            <br/>
-                                            <obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                 id="other-common-symtops"/>
-                                            <br/>
-                                            <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                 id="other-symptom-text"/>
+                                                  id="signsSymptoms-error"/>
+                                            <br/><br/><i>Specify</i>
+                                            <obs conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                 id="other-signs-symptoms-text"/>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -1246,8 +1394,6 @@
             <h2 class="StepTitle">Cancer Screening</h2>
 
                         <fieldset>
-                            <legend>Cancer Screening</legend>
-
                             <table class="screening" width="75%" cellpadding="0" cellspacing="0" align="center">
                                 <tbody>
                                 <tr>
@@ -1255,22 +1401,28 @@
                                 </tr>
                                 <tr>
 
-                                    <td colspan="2">Visit type
-
-                                        <div class="requiredInput">
-                                            <obs conceptId="164181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                 answerConceptIds="164180AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,bbd5d81e-d694-48e6-a948-ed82e63e2030,d6dbc59d-26ea-459e-be4a-75b89c9210ae"
-                                                 answerLabels="Initial screening,Repeat screening, Post-Treatment screening"
-                                                 style="radio"/>
-                                        </div>
+                                    <td colspan="2">Visit type:
+                                        &nbsp; &nbsp; &nbsp;
+                                            <obs id="visit_type" conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                 answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                   161236AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                   165381,
+                                                                   165382"
+                                                 answerLabels="Initial visit,
+                                                               Routine visit,
+                                                               Post treatment visit,
+                                                               Post treatment complication"
+                                                 style="radio"  />
+                                        <span style="color:red;"><strong>*</strong></span>
                                     </td>
 
                                 </tr>
                                 <tr>
                                     <td colspan="2">
                                         Cancer type:
+                                        &nbsp;
                                         <obs conceptId="116030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptIds="116023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116026AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127527AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,146221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115355AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1be9b3bb-40dc-44bb-97c8-13824287f3cb"
+                                             answerConceptIds="116023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116026AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127527AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,146221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115355AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabels="Cervical,Breast,Colorectal,Retinoblastoma,Prostate,Oral cancer,Other"
                                              style="radio" id="cancerType"/>
                                     </td>
@@ -1288,169 +1440,189 @@
                                             <includeIf velocityTest="$patient.gender == 'F' ">
                                                 <tr id="cervicalHpv">
                                                     <th rowspan="4">Cervical</th>
-                                                    <th>HPV</th>
+                                                 <obsgroup groupingConceptId="159859AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                                    <td>
+                                                        <obs id="screening_method" conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="159859AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="HPV"  /> </td>
+
                                                     <td valign="top">
-                                                        <obs conceptId="159859AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabels="Negative,Positive" style="radio"
+                                                        <obs conceptId="164934"
+                                                             answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159393AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabels="Negative,Positive,Presumed Cancer" style="radio"
                                                              answerSeparator="&lt;br/&gt;" id="hpvResponses"/>
                                                     </td>
                                                     <td valign="top">
                                                         <div id="hpvTreatmentForNegativeResults">
-                                                            <obs conceptId="62a2e091-688e-40f4-b70f-dab1aef62388"
-                                                                 answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
+                                                            <obs conceptId="165070"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Counseled on negative results"
                                                                  style="checkbox"/>
                                                             <br/>
-                                                            <obs conceptId="62a2e091-688e-40f4-b70f-dab1aef62388"
-                                                                 answerConceptId="c8c67930-1002-4637-be09-755560fd8452"
+                                                            <obs conceptId="166663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Re-screen after 5 years"
                                                                  style="checkbox"/>
                                                             <br/>
-                                                            <obs conceptId="62a2e091-688e-40f4-b70f-dab1aef62388"
-                                                                 answerConceptId="13be60bf-28ac-44b7-a847-4f1c24f2afa6"
+                                                            <obs conceptId="165086"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Re-screening after 2 years"
                                                                  style="checkbox"/>
                                                         </div>
 
                                                         <hr/>
                                                         <div id="hpvTreatmentForPositiveResults">
-                                                            <obs conceptId="62a2e091-688e-40f4-b70f-dab1aef62388"
-                                                                 answerConceptId="73e82dc9-f73a-47a8-b4e6-fdf3c1f4b73f"
+                                                            <obs conceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Do a VIA or colposcopy" style="checkbox"/>
                                                         </div>
                                                     </td>
+                                                 </obsgroup>
                                                 </tr>
 
                                                 <tr id="cervicalVia">
-
-                                                    <th>VIA/VILI</th>
+                                               <obsgroup groupingConceptId="164977">
+                                                <td>
+                                                    <obs id="screening_method" conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        answerConceptId="164977"
+                                                        answerLabel="VIA/VILI"  /> </td>
                                                     <td>
-                                                        <obs conceptId="162816AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        <obs conceptId="164934"
                                                              answerSeparator="&lt;br/&gt;"
                                                              answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabels="Negative,Positive,suspicious for cancer"
+                                                             answerLabels="Negative,Positive,Suspicious for cancer"
                                                              style="radio"
                                                              id="viaResponses"/>
                                                     </td>
                                                     <td>
                                                         <div id="viaTreatmentNegativeResults">
-                                                            <obs conceptId="3ddc3275-66c2-40fc-9ed2-12c1725d50f9"
-                                                                 answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
+                                                            <obs conceptId="165070"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Counseled for negative result"
                                                                  style="checkbox"/>
                                                         </div>
+                                                    <br/><br/>
                                                         <hr/>
+                                                        <br/>
                                                         <div id="viaTreatmentPositiveResults">
-                                                            <div id="cryotherapyOptions">
-                                                                <b>Cryotherapy</b><br/>
-                                                                <obs conceptId="a2d67f28-1e66-4199-8f50-067d37a06da7"
-                                                                     answerConceptIds="8329d974-5371-4fb0-98da-762da897ef72,d1d9a2a0-2ae7-4bf1-970a-0c6f51d67428,b4fe108d-c980-4451-99fb-6ef42e9a8dcc,60dbeb18-e599-4276-8252-5eb84641a4a3"
-                                                                     answerLabels="Done single visit approach,Crytotherapy postponed,Referred for cryotherapy,postponed cryotherapy done today"
-                                                                     style="dropdown" id="cryotherapy"/>
-                                                                <br/>
-                                                                Date screening done<br/>
-                                                                <obs conceptId="23f45ac8-613a-4ece-b3d9-ac1697acc2ab"/>
+                                                            <obs id="treatment" conceptId="165266"
+                                                                 answerConceptIds="165385,
+                                                                              165381,
+                                                                              165386,
+                                                                              162810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                              165396,
+                                                                              165395,
+                                                                              159837AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                              165391,
+                                                                              5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                              1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                                                 answerLabels="Cryotherapy performed (single Visit),
+                                                                          Cryotherapy postponed,
+                                                                          Cryotherapy performed (previously postponed),
+                                                                          LEEP performed,
+                                                                          Cold knife cone,
+                                                                          Thermocoagulation,
+                                                                          Hysterectomy,
+                                                                          Referred for cancer treatment,
+                                                                          Other,
+                                                                          None"
+                                                                 style="dropdown" required="true"/>
                                                             </div>
-                                                            <br/>
-                                                            <div id="thermalAblationOptions">
-                                                                <b>Thermal ablation</b><br/>
-                                                                <obs conceptId="d2632d95-4869-4f81-b06f-2a9f6d442853"
-                                                                     answerConceptIds="8329d974-5371-4fb0-98da-762da897ef72,d2632d95-4869-4f81-b06f-2a9f6d442853,d1d9a2a0-2ae7-4bf1-970a-0c6f51d67428,1648AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,60dbeb18-e599-4276-8252-5eb84641a4a3"
-                                                                     answerLabels="Done single visit approach,Thermal ablation,Postponed,Referred for Thermal ablation,Postponed Thermal abilation done today"
-                                                                     style="dropdown"/>
-                                                                <br/>
-                                                                Date screening done<br/>
-                                                                <obs conceptId="23f45ac8-613a-4ece-b3d9-ac1697acc2ab"/>
-                                                            </div>
-                                                            <br/>
-                                                            <div id="leepOptions">
-                                                                <b>Loop electrosurgical excision</b><br/>
-                                                                <!--<obs conceptId="162810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                                                                     <!--answerConceptIds="8329d974-5371-4fb0-98da-762da897ef72,d1d9a2a0-2ae7-4bf1-970a-0c6f51d67428,b4fe108d-c980-4451-99fb-6ef42e9a8dcc"-->
-                                                                     <!--answerLabels="LEEP performed SVA,LEEP postponed,Referred for LEEP"-->
-                                                                     <!--style="dropdown"/>-->
-                                                                <br/>
-                                                            </div>
-                                                            <br/>
-                                                            <div id="otherTreatmentForViaPositive">
-                                                                <b>Other treatment</b><br/>
-                                                                <obs conceptId="57c76c24-baa2-4c12-9f30-b8d192bae1a4"
-                                                                     answerConceptIds="162811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159837AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                     answerLabels="Cone biopsy,Hysterectomy"
-                                                                     style="dropdown"/>
-                                                            </div>
-                                                        </div>
+                                                        <br/>
                                                         <hr/>
+                                                        <br/><br/>
                                                         <div id="viaSuspectForCancerOptions">
-                                                            <obs conceptId="3ddc3275-66c2-40fc-9ed2-12c1725d50f9"
-                                                                 answerConceptId="b4fe108d-c980-4451-99fb-6ef42e9a8dcc"
+                                                            <obs conceptId="166937AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerConceptId="161826AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Perform biopsy and/or refer for further management"
                                                                  style="checkbox"/>
                                                         </div>
-
                                                     </td>
+                                               </obsgroup>
                                                 </tr>
                                                 <tr id="cervicalPapSmear">
+                                             <obsgroup groupingConceptId="885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 
-                                                    <th>Pap smear</th>
+                                                    <td><obs id="screening_method" conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Pap Smear"  /> </td>
                                                     <td>
-                                                        <obs conceptId="885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        <obs conceptId="164934"
                                                              labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"
-                                                             answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145802AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145805AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,122321AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabels="Normal,Atypical squamous cells(ASC-US/ASC-H),Low-grade squamous intraepithelial lesion(LSIL/CIN I),High grade squamous intraepithelial lesion(HSIL/CIN II or III/CIS),AGUS,Invasive cancer"
-                                                             style="radio" id="papsmearResponses"/>
+                                                             answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               145808AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               145805AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               155424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               145822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               155208AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabels="Normal,
+                                                                           Low grade lesion,
+                                                                           High grade lesion,
+                                                                           Invasive Cancer,
+                                                                           Atypical squamous cells(ASC-US/ASC-H),
+                                                                           AGUS,
+                                                                           Other"
+                                                             style="radio" id="papsmearResponses" />
                                                     </td>
                                                     <td>
                                                         <div id="papsmearTreatmentNormalOption">
-                                                            <obs conceptId="a9c51ac1-7f82-4fac-8e21-2ce500fd1991"
-                                                                 answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
+                                                            <obs conceptId="165070"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Counseled on negative results"
                                                                  style="checkbox"/>
                                                             <br/>
-                                                            <obs conceptId="a9c51ac1-7f82-4fac-8e21-2ce500fd1991"
-                                                                 answerConceptId="3c08333f-4266-443b-b51e-b61cda5e3f2a"
+                                                            <obs conceptId="166663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Rescreen every 3-5 years"
                                                                  style="checkbox"/>
                                                         </div>
                                                         <hr/>
+                                                        <br/>
+                                                        Referrals ordered:
                                                         <div id="referColoscopy">
-                                                            <obs conceptId="a9c51ac1-7f82-4fac-8e21-2ce500fd1991"
-                                                                 answerConceptId="dbc25e25-c4df-4504-858a-fa978a8fdcf9"
-                                                                 answerLabel="Refer for colposcopy" style="checkbox"/>
-                                                        </div>
-                                                        <hr/>
-                                                        <div id="referToBiopsy">
-                                                            <obs conceptId="a9c51ac1-7f82-4fac-8e21-2ce500fd1991"
-                                                                 answerConceptId="9b892de0-0551-449c-88d1-470f6618943c"
-                                                                 answerLabel="Refer for biopsy" style="checkbox"/>
+                                                            <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerConceptIds="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161826AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerLabel="Refer for colposcopy,Refer for biopsy" style="dropdown"/>
                                                         </div>
                                                     </td>
+                                             </obsgroup>
                                                 </tr>
                                                 <tr id="cervicalColposcopy">
-                                                    <th>Colposcopy(for positive HPV,VIA or PAP smear)</th>
+                                        <obsgroup groupingConceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
                                                     <td>
-                                                        <obs conceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        <obs id="screening_method" conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Colposcopy(for positive HPV,VIA or PAP smear)"  />
+                                                        </td>
+                                                    <td>
+                                                        <obs conceptId="164934"
                                                              answerSeparator="&lt;br/&gt;"
-                                                             answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabels="Negative,Postive,Suspicious for cancer"
+                                                             answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabels="Normal,Abnormal,Suspicious for cancer, Other"
                                                              style="radio"
                                                              id="colposcopyResponses"/>
                                                     </td>
                                                     <td>
                                                         <div id="colposcopyNegativeResultsTreatmentOptions">
-                                                            <obs conceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                 answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
+                                                            <obs conceptId="165070"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerLabel="Counsel for negative results"
                                                                  style="checkbox"/>
                                                             <br/>
-                                                            <obs conceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                 answerConceptId="c8c67930-1002-4637-be09-755560fd8452"
-                                                                 answerLabel="Rescreen every 5 years" style="checkbox"/>
+                                                            <obs conceptId="166663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerLabel="Re-screen after 5 years"
+                                                                 style="checkbox"/>
                                                             <br/>
-                                                            <obs conceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                 answerConceptId="13be60bf-28ac-44b7-a847-4f1c24f2afa6"
-                                                                 answerLabel="Rescreen after 2 years" style="checkbox"/>
+                                                            <obs conceptId="165086"
+                                                                 answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerLabel="Re-screening after 2 years"
+                                                                 style="checkbox"/>
                                                         </div>
                                                         <hr/>
                                                         <div id="colposcopyPositiveResultsTreatmentOptions">
@@ -1485,8 +1657,8 @@
                                                                  style="checkbox"/>
                                                         </div>
                                                     </td>
-                                                </tr>
-
+                                        </obsgroup>
+                                    </tr>
 
                                                 <includeIf velocityTest="$patient.age > 0 ">
                                                     <tr id="breastCbe">
@@ -1830,7 +2002,7 @@
                                                 <tr id="prostateTrus">
                                                     <th>Trans-rectal ultrasound biopsy</th>
                                                     <td>
-                                                        <obs conceptId="161164AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        <obs conceptId="1126AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6ca703a8-7461-4e7c-8703-b03b46aa981c,c49a8568-a56d-4c6e-afed-6be347c15fe0,158566AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,3d629987-ee66-43d8-8532-f41ba00dc493,2b7a0b08-ca77-4df7-9508-b9f8913c2066"
                                                              answerLabels="Normal,Benign,Inflammation (acute/chronic),Prostatic intraepithelial neoplasia (PIN),Adenocarcinoma,Other malignancies"
                                                              style="radio" answerSeparator="&lt;br/&gt;" id="transrectalFinding"/>
