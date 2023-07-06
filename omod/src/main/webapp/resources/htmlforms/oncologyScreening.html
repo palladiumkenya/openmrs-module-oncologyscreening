@@ -1034,7 +1034,7 @@
         function step2Validation(){    //Step 2 validations
             var signsSymptomsChecked = jq("#signs-symptoms input:checkbox:checked");
             if (signsSymptomsChecked.length == 0) {
-                jq('#oncology').smartWizard('setError', {stepnum: 3, iserror: true});
+                jq('#oncology').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('signsSymptoms-error.error').html('Please specify any signs and symptoms.').show();
                 return false;
             }else {
@@ -1045,13 +1045,13 @@
         }
         function step3Validation(){    //Step 3 validations
             var visitType =getValue('visit_type.value');
-            if (smoking_status == false) {
-                jq('#oncology').smartWizard('setError', {stepnum: 1, iserror: true});
-                getField('smoking-status.error').html('Smoking status is required').show();
+            if (visitType == false) {
+                jq('#oncology').smartWizard('setError', {stepnum: 3, iserror: true});
+                getField('visit_type.error').html('Visit type is required').show();
                 return false;
             }
             else {
-                getField('smoking-status.error').html('Smoking status is required').hide();
+                getField('visit_type.error').html('Visit type is required').hide();
                 jq('#oncology').smartWizard('showMessage',"");
                 return true;
             }
