@@ -39,6 +39,7 @@
             text-shadow: 1px 1px 1px #fff;
         }
     </style>
+    <script type="text/javascript" src="../moduleResources/oncologyapp/scripts/moment.js"></script>
     <script type="text/javascript">
         var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()"/>;
         var HIV_POSITIVE = 703;
@@ -64,6 +65,7 @@
             jq('#cervicalVia').hide();
             jq('#cervicalPapSmear').hide();
             jq('#cervicalColposcopy').hide();
+            jq("#other-reasons-for-referral").hide();
             jq('#oncology').smartWizard({
                 selected: 0,  // Selected Step, 0 = first step
                 keyNavigation: true, // Enable/Disable key navigation(left and right keys are used if enabled)
@@ -136,6 +138,7 @@
             jq('#colerectal-cancerType :input[type=checkbox]').change(onColorectalCancerTypeSelected);
             jq('#breast-cancerType :input[type=checkbox]').change(onBreastCancerTypeSelected);
             jq('#cervical-cancerType :input[type=checkbox]').change(onCervicalCancerTypeSelected);
+            jq('#referral-reason select').change(referralReason);
 
 
             // Gender validations
@@ -208,6 +211,31 @@
             } else if (LATEST_HTS_RESULT == HIV_NEGATIVE) {
                 jq("#hiv-status input[value=664]").prop("checked", true);
             }
+
+            beforeSubmit.push(function() {
+                var encounterDate = getValue('encounter-date.value');
+                var followupdate = getValue('follow-up-date.value')
+                var cervicalChecked = jq("#cervical-cancerType input:checkbox:checked");
+                var viaScreeningMethod = jq("#via_screening_method input:checkbox:checked");
+                var viaResponses = getValue("viaResponses.value");
+                var treatment = getValue("treatment.value");
+
+                var isFollowUpDate = moment(moment(moment(followupdate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+                if (isFollowUpDate) {
+                    getField('follow-up-date.error').html('Follow up date , should not be later than encounter date').show();
+                    return false;
+                }
+                
+                if (cervicalChecked.val() == 116023 &amp;&amp; cervicalChecked.length == 1 &amp;&amp; 
+                    viaScreeningMethod.val() == 164977 &amp;&amp; viaScreeningMethod.length == 1 &amp;&amp; 
+                    viaResponses == 703 &amp;&amp; treatment =="" ) {
+                        getField('treatment.error').html('Via/Vili treatment options is required').show();
+                        return false;
+                } else {
+                    getField('treatment.error').html('Via/Vili treatment options is required').hide();
+                }
+
+            });
         });
 
         // End on ready
@@ -894,6 +922,8 @@
         var onOralCancerTypeSelected = function () {
             var val = jq(this).val();
             var oralChecked = jq("#oral-cancerType input:checkbox:checked");
+            console.log('oralChecked===11111',oralChecked);
+            console.log('oralChecked===',oralChecked.val());
             if (val == 115355 &amp;&amp; oralChecked.length == 1) {
                 jq('#oralVisual').show();
                 jq('#oralCytology').show();
@@ -1035,6 +1065,15 @@
                 jq('#papReferrals *').prop('disabled', true);
             }
         }
+
+        var referralReason  = function () {
+            var reason = getValue("referral-reason.value");
+            if (reason == 5622) {
+                jq("#other-reasons-for-referral").show();
+            } else {
+                jq("#other-reasons-for-referral").hide();
+            }
+    }
 
         var onTreatmentOptionsChange = function () {
             var val = jq(this).val();
@@ -1680,7 +1719,7 @@
                                                                           Thermal ablation performed (SVA),
                                                                           Hysterectomy,
                                                                           Referred for cancer treatment"
-                                                             style="dropdown" required="true"/>
+                                                             style="dropdown"/>
                                                     </div>
                                                     <br/>
                                                     <hr/>
@@ -2326,23 +2365,22 @@
             <div id="step-4">
                 <h2 class="StepTitle">Follow Up</h2>
                 <fieldset>
-                    <legend> Follow Up</legend>
                     <table class="screening" width="75%" cellpadding="0" cellspacing="0" align="center">
                         <tbody>
                         <tr>
                             <th colspan="2">&nbsp;</th>
                         </tr>
                         <tr>
-                            <td rowspan="4">Follow-up Plan</td>
+                            <td rowspan="5">Follow-up Plan</td>
                             <td>Follow up date:
-                                <obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"/>
+                                <obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" id="follow-up-date"/>
                             </td>
                         </tr>
                         <tr>
                             <td>Referred:
                                 <obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="No,Yes" style="radio"/>
+                                     answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="Yes,No" style="radio"/>
                             </td>
                         </tr>
                         <tr>
@@ -2351,14 +2389,20 @@
                                 <obs conceptId="1887AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="b4fe108d-c980-4451-99fb-6ef42e9a8dcc,161194AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabels="Further evaluation,Diagnostic work up,Treatment,Other (specify)"
-                                     style="dropdown"/>
+                                     style="dropdown" id="referral-reason"/>
 
                             </td>
                         </tr>
-                        <tr>
+                        <tr id="other-reasons-for-referral">
                             <td>
                                 Other reasons<br/>
                                 <obs conceptId="164359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100"/>
+                            </td>
+                        </tr>
+                        <tr id="clinical-notes">
+                            <td>
+                                Clinical notes<br/>
+                                <obs conceptId="164879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="4" cols="100"/>
                             </td>
                         </tr>
                         </tbody>
