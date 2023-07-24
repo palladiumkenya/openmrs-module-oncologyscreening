@@ -922,8 +922,6 @@
         var onOralCancerTypeSelected = function () {
             var val = jq(this).val();
             var oralChecked = jq("#oral-cancerType input:checkbox:checked");
-            console.log('oralChecked===11111',oralChecked);
-            console.log('oralChecked===',oralChecked.val());
             if (val == 115355 &amp;&amp; oralChecked.length == 1) {
                 jq('#oralVisual').show();
                 jq('#oralCytology').show();
