@@ -540,7 +540,7 @@
                 } else if (value === 1116) {
                     jq('#colposcopyNegativeResultsTreatmentOptions *').prop('disabled', true);
                     jq('#colposcopyPositiveResultsTreatmentOptions *').prop('disabled', false);
-                    jq('#colposcopySuspectCancerTreatmentOption *').prop('disabled', true);
+                    jq('#colposcopySuspectCancerTreatmentOption *').prop('disabled', false);
                 } else if (value === 159008) {
                     jq('#colposcopyNegativeResultsTreatmentOptions *').prop('disabled', true);
                     jq('#colposcopyPositiveResultsTreatmentOptions *').prop('disabled', true);
@@ -1786,21 +1786,39 @@
                                                             <div>
                                                                 <b>Biopsy if available</b><br/>
                                                                 <i>If result is CIN II and above:</i><br/>
-                                                                Cryotherapy<br/>
-                                                                Thermal ablation<br/>
-                                                                LEEP
+                                                                <obs conceptId="166665AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                     labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"
+                                                                     answerConceptIds="162812AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                                  165395,
+                                                                                  166620AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                                  165995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                     answerLabels="Cryotherapy,
+                                                                              Thermal ablation,
+                                                                              Loop electrosurgical excision,
+                                                                              Other treatment"
+                                                                     style="radio" id="treatment-options"/>
                                                             </div>
                                                             <br/>
                                                             <div>
-                                                                <i>If results is CIN or less</i><br/>
-                                                                Rescreen after 3 years
+                                                                <i>If results is CIN I or less</i><br/>
+                                                                <obs conceptId="166665AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                     labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"
+                                                                     answerConceptIds="162812AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                     answerLabels="Cryotherapy"
+                                                                     style="radio" id="treatment-options"/>
                                                             </div>
                                                             <br/>
                                                             <div>
                                                                 <b>If biopsy not available</b>
-                                                                Cryotherapy<br/>
-                                                                Thermal ablation<br/>
-                                                                LEEP
+                                                                <obs conceptId="166665AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                     labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"
+                                                                     answerConceptIds="162812AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                                  165395,
+                                                                                  166620AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                     answerLabels="Cryotherapy,
+                                                                              Thermal ablation,
+                                                                              Loop electrosurgical excision procedure"
+                                                                     style="radio" id="treatment-options"/>
                                                             </div>
 
                                                         </div>
