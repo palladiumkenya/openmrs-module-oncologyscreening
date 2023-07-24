@@ -43,12 +43,8 @@
         var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()"/>;
         var HIV_POSITIVE = 703;
         var HIV_NEGATIVE = 664;
-        var LATEST_HTS_RESULT = "<lookup expression="
-        fn.latestObs(159427).getValueCoded().getConceptId()
-        "/>";
-        var pgender = "<lookup expression="
-        patient.gender
-        " />";
+        var LATEST_HTS_RESULT = "<lookup expression="fn.latestObs(159427).getValueCoded().getConceptId()"/>";
+        var pgender = "<lookup expression="patient.gender" />";
         jq(document).ready(function () {
             jq('#prostateDre').hide();
             jq('#prostatePsa').hide();
@@ -144,12 +140,12 @@
 
             // Gender validations
             if (pgender == 'F') {
-                jq("#cancerType input[value=146221]").prop("disabled", true);
+                jq("#cancerType input[value=146221]").prop("disabled",true);
                 getField('parity-term.value').change(onParityChange);
                 getField('parity-abortion.value').change(onParityChange);
             }
             if (pgender == 'M') {
-                jq("#cancerType input[value=116023]").prop("disabled", true);
+                jq("#cancerType input[value=116023]").prop("disabled",true);
             }
 
 
@@ -208,6 +204,7 @@
 
             if (LATEST_HTS_RESULT == HIV_POSITIVE || PATIENT_IS_ENROLLED_HIV) {
                 jq("#hiv-status input[value=703]").prop("checked", true);
+                jq('#hiv-status input[type=radio]').attr("style", "pointer-events:none;");
             } else if (LATEST_HTS_RESULT == HIV_NEGATIVE) {
                 jq("#hiv-status input[value=664]").prop("checked", true);
             }
@@ -520,18 +517,15 @@
                 if (value === 1115) {
                     jq('#papsmearTreatmentNormalOption *').prop('disabled', false);
                     getField('papReferrals.value').prop("selectedIndex", 0);
-                    jq('#referColoscopy *').prop('disabled', true);
-                    jq('#referToBiopsy *').prop('disabled', true);
-                } else if (value === 155424) {
+                    jq('#papReferrals *').prop('disabled', true);
+                  } else if (value === 155424) {
                     jq('#papsmearTreatmentNormalOption :input').prop('checked', false);
                     jq('#papsmearTreatmentNormalOption *').prop('disabled', true);
-                    jq('#referColoscopy *').prop('disabled', true);
-                    jq('#referToBiopsy *').prop('disabled', false);
+                    jq('#papReferrals *').prop('disabled', false);
                 } else if (value === 145822 || 145802 || 122321 || 145805) {
                     jq('#papsmearTreatmentNormalOption :input').prop('checked', false);
                     jq('#papsmearTreatmentNormalOption *').prop('disabled', true);
-                    jq('#referColoscopy *').prop('disabled', false);
-                    jq('#referToBiopsy *').prop('disabled', true);
+                    jq('#papReferrals *').prop('disabled', false);
                 }
             });
         }
@@ -1031,21 +1025,14 @@
             var papScreeningMethodChecked = jq("#pap_screening_method input:checkbox:checked");
             var res = jq('#papsmearResponses');
             var neg = jq('#papsmearTreatmentNormalOption');
-            var referCol = jq('#referColoscopy *').prop('disabled', false);
-            var referBio = jq('#referToBiopsy *').prop('disabled', true);
             if (val == 885 &amp;&amp; papScreeningMethodChecked.length == 1) {
                 jq('#papsmearResponses :input').prop('disabled', false);
-                jq('#papsmearTreatmentNormalOption :input').prop('disabled', false);
-                jq('#referColoscopy *').prop('disabled', false);
-                jq('#referToBiopsy *').prop('disabled', false);
-            } else {
-                clearHiddenSections([res, neg, referCol]);
+             } else {
+                clearHiddenSections([res, neg]);
                 getField('papReferrals.value').prop("selectedIndex", 0);
                 jq('#papsmearResponses :input').prop('disabled', true);
                 jq('#papsmearTreatmentNormalOption :input').prop('disabled', true);
-                jq('#referColoscopy *').prop('disabled', true);
-                jq('#referToBiopsy *').prop('disabled', true);
-
+                jq('#papReferrals *').prop('disabled', true);
             }
         }
 
@@ -1503,6 +1490,7 @@
                                 <obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      id="signsSymptoms-error"/>
+                                <span style="color:red;"><strong>*</strong></span>
                                 <br/><br/><i>Specify</i>
                                 <obs conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      id="other-signs-symptoms-text"/>
