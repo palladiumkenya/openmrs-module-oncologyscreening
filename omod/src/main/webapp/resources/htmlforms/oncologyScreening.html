@@ -131,7 +131,9 @@
             jq('#hpv_screening_method :input[type=checkbox]').change(onHpvScreeningMethodSelected);
             jq('#via_screening_method :input[type=checkbox]').change(onViaScreeningMethodSelected);
             jq('#pap_screening_method :input[type=checkbox]').change(onPapScreeningMethodSelected);
+            jq('#colposcopy_screening_method :input[type=checkbox]').change(onColposcopyScreeningMethodSelected);
             jq('#treatment-options :input[type=radio]').change(onTreatmentOptionsChange);
+            jq('#colposcopy-treatment-options :input[type=radio]').change(onColTreatmentOptionsChange);
             jq('#prostate-cancerType :input[type=checkbox]').change(onProstateCancerTypeSelected);
             jq('#oral-cancerType :input[type=checkbox]').change(onOralCancerTypeSelected);
             jq('#retinoblastoma-cancerType :input[type=checkbox]').change(onRetinoblastomaCancerTypeSelected);
@@ -560,19 +562,27 @@
 
         function processColposcopyResponsesAndTreatment() {
             jq('#colposcopyResponses input:radio').click(function () {
+                var treatmentColOptions = jq('#colposcopy-treatment-options');
+                var neg = jq('#colposcopyNegativeResultsTreatmentOptions');
+                var pos = jq('#colposcopyPositiveResultsTreatmentOptions');
+                var suspect = jq('#colposcopySuspectCancerTreatmentOption');
+
                 var value = parseInt(jq(this).val());
-                if (value === 1115) {
+                    if (value === 1115) {
                     jq('#colposcopyNegativeResultsTreatmentOptions *').prop('disabled', false);
                     jq('#colposcopyPositiveResultsTreatmentOptions *').prop('disabled', true);
                     jq('#colposcopySuspectCancerTreatmentOption *').prop('disabled', true);
+                    clearHiddenSections([treatmentColOptions, pos, suspect]);
                 } else if (value === 1116) {
                     jq('#colposcopyNegativeResultsTreatmentOptions *').prop('disabled', true);
                     jq('#colposcopyPositiveResultsTreatmentOptions *').prop('disabled', false);
                     jq('#colposcopySuspectCancerTreatmentOption *').prop('disabled', false);
+                    clearHiddenSections([neg, suspect]);
                 } else if (value === 159008) {
                     jq('#colposcopyNegativeResultsTreatmentOptions *').prop('disabled', true);
                     jq('#colposcopyPositiveResultsTreatmentOptions *').prop('disabled', true);
                     jq('#colposcopySuspectCancerTreatmentOption *').prop('disabled', false);
+                    clearHiddenSections([treatmentColOptions, pos, suspect]);
                 }
             });
         }
@@ -1064,6 +1074,25 @@
             }
         }
 
+        var onColposcopyScreeningMethodSelected = function () {
+            var val = jq(this).val();
+            var colposcopyScreeningMethodChecked = jq("#colposcopy_screening_method input:checkbox:checked");
+            var res = jq('#colposcopyResponses');
+            var neg = jq('#colposcopyNegativeResultsTreatmentOptions');
+            var pos = jq('#colposcopyPositiveResultsTreatmentOptions');
+            if (val == 164977 &amp;&amp; colposcopyScreeningMethodChecked.length == 1) {
+                jq('#colposcopyResponses :input').prop('disabled', false);
+                jq('#colposcopyNegativeResultsTreatmentOptions :input').prop('disabled', false);
+                jq('#colposcopyPositiveResultsTreatmentOptions :input').prop('disabled', false);
+            } else {
+                clearHiddenSections([res, neg, pos]);
+                jq('#colposcopyResponses :input').prop('disabled', true);
+                jq('#colposcopyNegativeResultsTreatmentOptions :input').prop('disabled', true);
+                jq('#colposcopyPositiveResultsTreatmentOptions :input').prop('disabled', true);
+
+            }
+        }
+
         var referralReason  = function () {
             var reason = getValue("referral-reason.value");
             if (reason == 5622) {
@@ -1118,6 +1147,55 @@
                 jq('#treatment option[value=165395]').show();
                 jq('#treatment option[value=159837]').hide();
                 jq('#treatment option[value=165391]').hide();
+
+            }
+        }
+
+        var onColTreatmentOptionsChange = function () {
+            var val = jq(this).val();
+            if (val == 162812) {    //Cryotherapy
+                jq('#colposcopy treatment option[value=165385]').show();
+                jq('#colposcopy treatment option[value=165381]').show();
+                jq('#colposcopy treatment option[value=165386]').show();
+                jq('#colposcopy treatment option[value=1648]').show();
+                jq('#colposcopy treatment option[value=162810]').hide();
+                jq('#colposcopy treatment option[value=165396]').hide();
+                jq('#colposcopy treatment option[value=165395]').hide();
+                jq('#colposcopy treatment option[value=159837]').hide();
+                jq('#colposcopy treatment option[value=165391]').hide();
+
+            } else if (val == 165395) {    //thermal ablation
+                jq('#colposcopy treatment option[value=165385]').hide();
+                jq('#colposcopy treatment option[value=165381]').hide();
+                jq('#colposcopy treatment option[value=165386]').hide();
+                jq('#colposcopy treatment option[value=1648]').hide();
+                jq('#colposcopy treatment option[value=162810]').hide();
+                jq('#colposcopy treatment option[value=165396]').hide();
+                jq('#colposcopy treatment option[value=165395]').show();
+                jq('#colposcopy treatment option[value=159837]').hide();
+                jq('#colposcopy treatment option[value=165391]').hide();
+
+            } else if (val == 166620) {    //LEEP
+                jq('#colposcopy treatment option[value=165385]').hide();
+                jq('#colposcopy treatment option[value=165381]').hide();
+                jq('#colposcopy treatment option[value=165386]').hide();
+                jq('#colposcopy treatment option[value=1648]').hide();
+                jq('#colposcopy treatment option[value=162810]').show();
+                jq('#colposcopy treatment option[value=165396]').hide();
+                jq('#colposcopy treatment option[value=165395]').hide();
+                jq('#colposcopy treatment option[value=159837]').hide();
+                jq('#colposcopy treatment option[value=165391]').hide();
+
+            } else if (val == 165995) {    //Other
+                jq('#colposcopy treatment option[value=165385]').hide();
+                jq('#colposcopy treatment option[value=165381]').hide();
+                jq('#colposcopy treatment option[value=165386]').hide();
+                jq('#colposcopy treatment option[value=1648]').hide();
+                jq('#colposcopy treatment option[value=162810]').hide();
+                jq('#colposcopy treatment option[value=165396]').show();
+                jq('#colposcopy treatment option[value=165395]').show();
+                jq('#colposcopy treatment option[value=159837]').hide();
+                jq('#colposcopy treatment option[value=165391]').hide();
 
             }
         }
@@ -1788,7 +1866,8 @@
                                                     <obs id="screening_method"
                                                          conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                          answerConceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabel="Colposcopy(for positive HPV,VIA or PAP smear)"/>
+                                                         answerLabel="Colposcopy(for positive HPV,VIA or PAP smear)"
+                                                    />
                                                 </td>
                                                 <td>
                                                     <obs conceptId="164934"
@@ -1833,29 +1912,48 @@
                                                                               Thermal ablation,
                                                                               Loop electrosurgical excision,
                                                                               Other treatment"
-                                                                     style="radio" id="treatment-options"/>
+                                                                     style="radio" id="colposcopy-treatment-options"/>
+
+                                                                <br/>
+                                                                <obs id="colposcopyTreatment" conceptId="165266"
+                                                                     answerConceptIds="165385,
+                                                                              165381,
+                                                                              165386,
+                                                                              1648AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                              162810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                              165396,
+                                                                              165395,
+                                                                              159837AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                              165391"
+                                                                     answerLabels="Cryotherapy performed (SVA),
+                                                                          Cryotherapy postponed,
+                                                                          Cryotherapy performed (previously postponed),
+                                                                          Referred for cryotherapy,
+                                                                          LEEP performed,
+                                                                          Cold knife cone,
+                                                                          Thermal ablation performed (SVA),
+                                                                          Hysterectomy,
+                                                                          Referred for cancer treatment"
+                                                                     style="dropdown" required="true"/>
+
                                                             </div>
                                                             <br/>
                                                             <div>
                                                                 <i>If results is CIN I or less</i><br/>
                                                                 <obs conceptId="166665AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                      labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"
-                                                                     answerConceptIds="162812AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                     answerLabels="Cryotherapy"
-                                                                     style="radio" id="treatment-options"/>
+                                                                     answerConceptIds="413e3619-ea22-4a83-ae40-99b83a453906"
+                                                                     answerLabels="Rescreen after 3 years"
+                                                                     style="radio" id="colposcopy-treatment-options"/>
                                                             </div>
                                                             <br/>
                                                             <div>
                                                                 <b>If biopsy not available</b>
                                                                 <obs conceptId="166665AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                      labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"
-                                                                     answerConceptIds="162812AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                                                  165395,
-                                                                                  166620AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                     answerLabels="Cryotherapy,
-                                                                              Thermal ablation,
-                                                                              Loop electrosurgical excision procedure"
-                                                                     style="radio" id="treatment-options"/>
+                                                                     answerConceptIds="b4fe108d-c980-4451-99fb-6ef42e9a8dcc"
+                                                                     answerLabels="Refer for appropraite diagnosis and management"
+                                                                     style="radio" id="colposcopy-treatment-options"/>
                                                             </div>
 
                                                         </div>
