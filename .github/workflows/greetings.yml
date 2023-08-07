@@ -1,0 +1,33 @@
+name: deploy to data:8400
+on:
+  push:
+    branches: [ dev-wizard ]
+jobs:
+
+  build:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote connection
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.CICD_USERNAME }}
+        key: ${{ secrets.CICD_SECRET }}
+        port: ${{ secrets.PORT }}
+        command_timeout: 200m
+        script: |
+          cd /apps/kenyaemr
+          sudo rm -rf openmrs-module-oncologyscreening
+          sudo mkdir openmrs-module-oncologyscreening
+          sudo chown -R cicd:cicd openmrs-module-oncologyscreening
+          git config --global --add safe.directory /apps/kenyaemr/openmrs-module-oncologyscreening
+          cd /apps/kenyaemr/openmrs-module-oncologyscreening
+          git clone -b dev-wizard https://github.com/palladiumkenya/openmrs-module-oncologyscreening.git .
+          sudo chown -R cicd:cicd /apps/kenyaemr/openmrs-module-oncologyscreening
+          git status
+          sudo mvn license:format
+          sudo mvn clean install -DskipTests
+          ${{ secrets.DOCKERON8400 }}
+          echo "Done!"          
+          
