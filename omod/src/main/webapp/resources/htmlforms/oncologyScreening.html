@@ -44,8 +44,12 @@
         var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()"/>;
         var HIV_POSITIVE = 703;
         var HIV_NEGATIVE = 664;
-        var LATEST_HTS_RESULT = "<lookup expression="fn.latestObs(159427).getValueCoded().getConceptId()"/>";
-        var pgender = "<lookup expression="patient.gender" />";
+        var LATEST_HTS_RESULT = "<lookup expression="
+        fn.latestObs(159427).getValueCoded().getConceptId()
+        "/>";
+        var pgender = "<lookup expression="
+        patient.gender
+        " />";
         jq(document).ready(function () {
             jq('#prostateDre').hide();
             jq('#prostatePsa').hide();
@@ -145,13 +149,13 @@
 
             // Gender validations
             if (pgender == 'F') {
-                jq("#cancerType input[value=146221]").prop("disabled",true);
+                jq("#cancerType input[value=146221]").prop("disabled", true);
                 getField('parity-term.value').change(onParityChange);
                 getField('parity-abortion.value').change(onParityChange);
             }
             if (pgender == 'M') {
-                jq("#cancerType input[value=116023]").prop("disabled",true);
-                jq("#cancerType input[value=116026]").prop("disabled",true);
+                jq("#cancerType input[value=116023]").prop("disabled", true);
+                jq("#cancerType input[value=116026]").prop("disabled", true);
             }
 
 
@@ -215,7 +219,7 @@
                 jq("#hiv-status input[value=664]").prop("checked", true);
             }
 
-            beforeSubmit.push(function() {
+            beforeSubmit.push(function () {
                 var encounterDate = getValue('encounter-date.value');
                 var followupdate = getValue('follow-up-date.value')
                 var cervicalChecked = jq("#cervical-cancerType input:checkbox:checked");
@@ -228,12 +232,12 @@
                     getField('follow-up-date.error').html('Follow up date , should not be later than encounter date').show();
                     return false;
                 }
-                
-                if (cervicalChecked.val() == 116023 &amp;&amp; cervicalChecked.length == 1 &amp;&amp; 
-                    viaScreeningMethod.val() == 164977 &amp;&amp; viaScreeningMethod.length == 1 &amp;&amp; 
-                    viaResponses == 703 &amp;&amp; treatment =="" ) {
-                        getField('treatment.error').html('Via/Vili treatment options is required').show();
-                        return false;
+
+                if (cervicalChecked.val() == 116023 &amp;&amp; cervicalChecked.length == 1 &amp;&amp;
+                    viaScreeningMethod.val() == 164977 &amp;&amp; viaScreeningMethod.length == 1 &amp;&amp;
+                    viaResponses == 703 &amp;&amp; treatment == "") {
+                    getField('treatment.error').html('Via/Vili treatment options is required').show();
+                    return false;
                 } else {
                     getField('treatment.error').html('Via/Vili treatment options is required').hide();
                 }
@@ -253,8 +257,8 @@
             jq('#breastUltrasound *').prop('disabled', true);
             jq('#breastMammograph *').prop('disabled', true);
 
-            jq('#colorectalFobt *').prop('disabled', true);
-            jq('#colorectalColonoscopy *').prop('disabled', true);
+            jq('#colorectalFobt *').prop('disabled', false);
+            jq('#colorectalColonoscopy *').prop('disabled', false);
 
             jq('#retinoblastomaEua *').prop('disabled', true);
             jq('#retinoblastomaRb1 *').prop('disabled', true);
@@ -549,7 +553,7 @@
                     jq('#papsmearTreatmentNormalOption *').prop('disabled', false);
                     getField('papReferrals.value').prop("selectedIndex", 0);
                     jq('#papReferrals *').prop('disabled', true);
-                  } else if (value === 155424) {
+                } else if (value === 155424) {
                     jq('#papsmearTreatmentNormalOption :input').prop('checked', false);
                     jq('#papsmearTreatmentNormalOption *').prop('disabled', true);
                     jq('#papReferrals *').prop('disabled', false);
@@ -569,7 +573,7 @@
                 var suspect = jq('#colposcopySuspectCancerTreatmentOption');
 
                 var value = parseInt(jq(this).val());
-                    if (value === 1115) {
+                if (value === 1115) {
                     jq('#colposcopyNegativeResultsTreatmentOptions *').prop('disabled', false);
                     jq('#colposcopyPositiveResultsTreatmentOptions *').prop('disabled', true);
                     jq('#colposcopySuspectCancerTreatmentOption *').prop('disabled', true);
@@ -1054,7 +1058,7 @@
             var neg = jq('#papsmearTreatmentNormalOption');
             if (val == 885 &amp;&amp; papScreeningMethodChecked.length == 1) {
                 jq('#papsmearResponses :input').prop('disabled', false);
-             } else {
+            } else {
                 clearHiddenSections([res, neg]);
                 getField('papReferrals.value').prop("selectedIndex", 0);
                 jq('#papsmearResponses :input').prop('disabled', true);
@@ -1082,14 +1086,14 @@
             }
         }
 
-        var referralReason  = function () {
+        var referralReason = function () {
             var reason = getValue("referral-reason.value");
             if (reason == 5622) {
                 jq("#other-reasons-for-referral").show();
             } else {
                 jq("#other-reasons-for-referral").hide();
             }
-    }
+        }
 
         var onTreatmentOptionsChange = function () {
             var val = jq(this).val();
@@ -1896,7 +1900,8 @@
                                                                 <b>Biopsy if available</b><br/>
                                                                 <i>If result is CIN II and above:</i><br/>
                                                                 <obs conceptId="166665AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                     labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"
+                                                                     labelText="&lt;br/&gt;"
+                                                                     answerSeparator="&lt;br/&gt;"
                                                                      answerConceptIds="162812AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                                   165395,
                                                                                   166620AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -1934,7 +1939,8 @@
                                                             <div>
                                                                 <i>If results is CIN I or less</i><br/>
                                                                 <obs conceptId="166665AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                     labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"
+                                                                     labelText="&lt;br/&gt;"
+                                                                     answerSeparator="&lt;br/&gt;"
                                                                      answerConceptIds="413e3619-ea22-4a83-ae40-99b83a453906"
                                                                      answerLabels="Rescreen after 3 years"
                                                                      style="radio" id="colposcopy-treatment-options"/>
@@ -1943,7 +1949,8 @@
                                                             <div>
                                                                 <b>If biopsy not available</b>
                                                                 <obs conceptId="166665AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                     labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"
+                                                                     labelText="&lt;br/&gt;"
+                                                                     answerSeparator="&lt;br/&gt;"
                                                                      answerConceptIds="b4fe108d-c980-4451-99fb-6ef42e9a8dcc"
                                                                      answerLabels="Refer for appropraite diagnosis and management"
                                                                      style="radio" id="colposcopy-treatment-options"/>
@@ -1961,223 +1968,257 @@
                                                 </td>
                                             </obsgroup>
                                         </tr>
-
                                     </includeIf>
 
                                     <includeIf velocityTest="$patient.age > 0 ">
                                         <tr id="breastCbe">
                                             <th rowspan="3">Breast</th>
-                                            <th>Clinical Breast Examination<br/>(CBE)</th>
-                                            <td>
-                                                <obs conceptId="7d1bd60b-bc97-4194-8688-727360199492"
-                                                     answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerLabels="Normal,Abnormal" style="radio"
-                                                     answerSeparator="&lt;br/&gt;" id="cbeQuetionOptions"/>
-                                            </td>
-                                            <td>
-                                                <div id="cbeNormalResultTreatmentOption">
-                                                    <obs conceptId="08fbc479-e0f9-4fff-93f0-2455bae05c66"
-                                                         answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
-                                                         answerLabel="Counsel for negative findings"
-                                                         style="checkbox"/>
-                                                </div>
-                                                <hr/>
-                                                <div id="cbeAbnormalResultTreatmentOption">
-                                                    <obs conceptId="08fbc479-e0f9-4fff-93f0-2455bae05c66"
-                                                         answerConceptId="1609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabel="refer for triple assessment"
-                                                         style="checkbox"/>
-                                                </div>
-                                            </td>
+                                            <obsgroup groupingConceptId="7d1bd60b-bc97-4194-8688-727360199492">
+                                                <td>
+                                                    <obs id="breast_screening_method"
+                                                         conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="08fbc479-e0f9-4fff-93f0-2455bae05c66"
+                                                         answerLabel="Clinical Breast Examination(CBE)"/>
+                                                </td>
+                                                <td>
+                                                    <obs conceptId="7d1bd60b-bc97-4194-8688-727360199492"
+                                                         answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabels="Normal,Abnormal" style="radio"
+                                                         answerSeparator="&lt;br/&gt;" id="cbeQuetionOptions"/>
+                                                </td>
+                                                <td>
+                                                    <div id="cbeNormalResultTreatmentOption">
+                                                        <obs conceptId="08fbc479-e0f9-4fff-93f0-2455bae05c66"
+                                                             answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
+                                                             answerLabel="Counsel for negative findings"
+                                                             style="checkbox"/>
+                                                    </div>
+                                                    <hr/>
+                                                    <div id="cbeAbnormalResultTreatmentOption">
+                                                        <obs conceptId="08fbc479-e0f9-4fff-93f0-2455bae05c66"
+                                                             answerConceptId="1609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="refer for triple assessment"
+                                                             style="checkbox"/>
+                                                    </div>
+                                                </td>
+                                            </obsgroup>
                                         </tr>
                                     </includeIf>
                                     <includeIf velocityTest="$patient.age > 0 ">
                                         <tr id="breastUltrasound">
-                                            <th>Ultrasound</th>
-                                            <td>
-                                                <obs conceptId="163591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerConceptIds="e799649c-6508-4660-9d9d-4df3449df20e,935ed682-1f42-405b-9f88-e0c47dcd519e,8cc5d428-0bfd-41f0-a7fb-a239aadadb0d,2ab46b88-b87a-4321-839f-b1351410335d,deec6439-884f-4921-b9d3-cfa77666d6e6,fbfd99cf-2be1-403d-b8c3-15b686d5cc78,89683205-f2c6-45e7-824d-9db0a29ca6c8"
-                                                     answerLabels="BIRADS 0(Incomplete Need additional imaging evaluation),BIRADS 1(Negative),BIRADS 2(Benign), BIRADS 3(Probably Benign), BIRADS 4(Suspicious), BIRADS 5(Highly Suggestive of Malignancy),BIRADS 6(Known Biopsy-Proven Malignancy)"
-                                                     style="radio" id="ultraSoundFindings"
-                                                     answerSeparator="&lt;br/&gt;"/>
-                                            </td>
-                                            <td>
-                                                <div id="birads0">
-                                                    <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
-                                                         answerConceptId="1609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabel="Recall for additional imaging"
-                                                         style="checkbox"/>
-                                                </div>
-                                                <hr/>
-                                                <div id="birads1">
-                                                    <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
-                                                         answerConceptId="432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabel="Routine mammography screening"
-                                                         style="checkbox"/>
-                                                </div>
-                                                <hr/>
-                                                <div id="birads3">
-                                                    <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
-                                                         answerConceptId="164080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabel="Short-interval(6 months) follow-up"
-                                                         style="checkbox"/>
-                                                </div>
-                                                <hr/>
-                                                <div id="birads4">
-                                                    <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
-                                                         answerConceptId="136785AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabel="Tissue Diagnosis(U/S guided biopsy)"
-                                                         style="checkbox"/>
-                                                    <br/>
-                                                    <obs conceptId="0054aae2-d945-47fd-8fba-8b515e780f41"
-                                                         answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabels="Done,Not-Done"
-                                                         style="checkbox"/>
-                                                    <br/>
+                                            <obsgroup groupingConceptId="3cb64490-aa67-4d23-b7d2-fb29b5b894da">
+                                                <td>
+                                                    <obs id="breast_screening_method"
+                                                         conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="3cb64490-aa67-4d23-b7d2-fb29b5b894da"
+                                                         answerLabel="Ultrasound"/>
+                                                </td>
 
-                                                    <div id="done">
-                                                        <obs conceptId="91181060-39a8-45fb-bd3b-b93506c9bea1"
-                                                             answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
-                                                             answerLabel="Negative-Counsel on negative results and review (provide review date)"
+                                                <td>
+                                                    <obs conceptId="163591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="e799649c-6508-4660-9d9d-4df3449df20e,935ed682-1f42-405b-9f88-e0c47dcd519e,8cc5d428-0bfd-41f0-a7fb-a239aadadb0d,2ab46b88-b87a-4321-839f-b1351410335d,deec6439-884f-4921-b9d3-cfa77666d6e6,fbfd99cf-2be1-403d-b8c3-15b686d5cc78,89683205-f2c6-45e7-824d-9db0a29ca6c8"
+                                                         answerLabels="BIRADS 0(Incomplete Need additional imaging evaluation),BIRADS 1(Negative),BIRADS 2(Benign), BIRADS 3(Probably Benign), BIRADS 4(Suspicious), BIRADS 5(Highly Suggestive of Malignancy),BIRADS 6(Known Biopsy-Proven Malignancy)"
+                                                         style="radio" id="ultraSoundFindings"
+                                                         answerSeparator="&lt;br/&gt;"/>
+                                                </td>
+                                                <td>
+                                                    <div id="birads0">
+                                                        <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
+                                                             answerConceptId="1609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Recall for additional imaging"
+                                                             style="checkbox"/>
+                                                    </div>
+                                                    <hr/>
+                                                    <div id="birads1">
+                                                        <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
+                                                             answerConceptId="432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Routine mammography screening"
+                                                             style="checkbox"/>
+                                                    </div>
+                                                    <hr/>
+                                                    <div id="birads3">
+                                                        <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
+                                                             answerConceptId="164080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Short-interval(6 months) follow-up"
+                                                             style="checkbox"/>
+                                                    </div>
+                                                    <hr/>
+                                                    <div id="birads4">
+                                                        <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
+                                                             answerConceptId="136785AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Tissue Diagnosis(U/S guided biopsy)"
                                                              style="checkbox"/>
                                                         <br/>
-                                                        Date screening done<br/>
-                                                        <obs conceptId="23f45ac8-613a-4ece-b3d9-ac1697acc2ab"/>
-                                                    </div>
-                                                    <br/>
-                                                    <div id="notDone">
-                                                        Reason Not Done
-                                                        <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             id="other-symptom-text"/>
-                                                    </div>
-                                                </div>
-                                                <hr/>
-                                                <div id="birads6">
-                                                    <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
-                                                         answerConceptId="b4fe108d-c980-4451-99fb-6ef42e9a8dcc"
-                                                         answerLabel="Referred for further management"
-                                                         style="checkbox"/>
-                                                </div>
-                                            </td>
+                                                        <obs conceptId="0054aae2-d945-47fd-8fba-8b515e780f41"
+                                                             answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabels="Done,Not-Done"
+                                                             style="checkbox"/>
+                                                        <br/>
 
+                                                        <div id="done">
+                                                            <obs conceptId="91181060-39a8-45fb-bd3b-b93506c9bea1"
+                                                                 answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
+                                                                 answerLabel="Negative-Counsel on negative results and review (provide review date)"
+                                                                 style="checkbox"/>
+                                                            <br/>
+                                                            Date screening done<br/>
+                                                            <obs conceptId="23f45ac8-613a-4ece-b3d9-ac1697acc2ab"/>
+                                                        </div>
+                                                        <br/>
+                                                        <div id="notDone">
+                                                            Reason Not Done
+                                                            <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 id="other-symptom-text"/>
+                                                        </div>
+                                                    </div>
+                                                    <hr/>
+                                                    <div id="birads6">
+                                                        <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
+                                                             answerConceptId="b4fe108d-c980-4451-99fb-6ef42e9a8dcc"
+                                                             answerLabel="Referred for further management"
+                                                             style="checkbox"/>
+                                                    </div>
+                                                </td>
+
+                                            </obsgroup>
                                         </tr>
                                     </includeIf>
 
                                     <includeIf velocityTest="$patient.age > 35">
                                         <tr id="breastMammograph">
-                                            <th>Mammography</th>
-                                            <td>
-                                                <obs conceptId="163591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerConceptIds="935ed682-1f42-405b-9f88-e0c47dcd519e,e799649c-6508-4660-9d9d-4df3449df20e,8cc5d428-0bfd-41f0-a7fb-a239aadadb0d,2ab46b88-b87a-4321-839f-b1351410335d,deec6439-884f-4921-b9d3-cfa77666d6e6,fbfd99cf-2be1-403d-b8c3-15b686d5cc78,89683205-f2c6-45e7-824d-9db0a29ca6c8"
-                                                     answerLabels="BIRADS 0(Incomplete Need additional imaging evaluation),BIRADS 1(Negative),BIRADS 2(Benign), BIRADS 3(Probably Benign), BIRADS 4(Suspicious), BIRADS 5(Highly Suggestive of Malignancy),BIRADS 6(Known Biopsy-Proven Malignancy)"
-                                                     style="radio" id="mammoFindings"
-                                                     answerSeparator="&lt;br/&gt;"/>
-                                            </td>
-                                            <td>
-                                                <div id="biradss0">
-                                                    <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
-                                                         answerConceptId="1609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabel="Recall for additional imaging"
-                                                         style="radio"/>
-                                                </div>
-                                                <hr/>
-                                                <div id="biradsm1">
-                                                    <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
-                                                         answerConceptId="432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabel="Routine Ultra sound screening"
-                                                         style="radio"/>
-                                                </div>
-                                                <hr/>
-                                                <div id="biradsm3">
-                                                    <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
-                                                         answerConceptId="164080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabel="Short-interval(6 months) follow-up"
-                                                         style="radio"/>
-                                                </div>
-                                                <hr/>
-                                                <div id="biradsm4">
-                                                    <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
-                                                         answerConceptId="136785AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabel="Tissue Diagnosis(U/S guided biopsy)"
-                                                         style="radio"/>
-                                                </div>
-                                                <hr/>
-                                                <div id="biradsm6">
-                                                    <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
-                                                         answerConceptId="159619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabel="Surgical excision when clinically appropriate)"
-                                                         style="radio"/>
-                                                </div>
-                                            </td>
+                                            <obsgroup groupingConceptId="163591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                                <td>
+                                                    <obs id="mammograph_screening_method"
+                                                         conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="163591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Mammography"/>
+                                                </td>
+                                                <td>
+                                                    <obs conceptId="163591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="935ed682-1f42-405b-9f88-e0c47dcd519e,e799649c-6508-4660-9d9d-4df3449df20e,8cc5d428-0bfd-41f0-a7fb-a239aadadb0d,2ab46b88-b87a-4321-839f-b1351410335d,deec6439-884f-4921-b9d3-cfa77666d6e6,fbfd99cf-2be1-403d-b8c3-15b686d5cc78,89683205-f2c6-45e7-824d-9db0a29ca6c8"
+                                                         answerLabels="BIRADS 0(Incomplete Need additional imaging evaluation),BIRADS 1(Negative),BIRADS 2(Benign), BIRADS 3(Probably Benign), BIRADS 4(Suspicious), BIRADS 5(Highly Suggestive of Malignancy),BIRADS 6(Known Biopsy-Proven Malignancy)"
+                                                         style="radio" id="mammoFindings"
+                                                         answerSeparator="&lt;br/&gt;"/>
+                                                </td>
+                                                <td>
+                                                    <div id="biradss0">
+                                                        <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
+                                                             answerConceptId="1609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Recall for additional imaging"
+                                                             style="radio"/>
+                                                    </div>
+                                                    <hr/>
+                                                    <div id="biradsm1">
+                                                        <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
+                                                             answerConceptId="432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Routine Ultra sound screening"
+                                                             style="radio"/>
+                                                    </div>
+                                                    <hr/>
+                                                    <div id="biradsm3">
+                                                        <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
+                                                             answerConceptId="164080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Short-interval(6 months) follow-up"
+                                                             style="radio"/>
+                                                    </div>
+                                                    <hr/>
+                                                    <div id="biradsm4">
+                                                        <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
+                                                             answerConceptId="136785AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Tissue Diagnosis(U/S guided biopsy)"
+                                                             style="radio"/>
+                                                    </div>
+                                                    <hr/>
+                                                    <div id="biradsm6">
+                                                        <obs conceptId="89875192-b834-4525-a021-e67c24e661f2"
+                                                             answerConceptId="159619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Surgical excision when clinically appropriate)"
+                                                             style="radio"/>
+                                                    </div>
+                                                </td>
+                                            </obsgroup>
                                         </tr>
                                     </includeIf>
                                     <includeIf velocityTest="$patient.age > 0">
                                         <tr id="colorectalFobt">
-                                            <th rowspan="1">Colorectal</th>
-                                            <th></th>
-                                            <td>
-                                                <obs conceptId="159362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerLabels="Positive,Negative" style="radio" id="fobt"
-                                                     answerSeparator="&lt;br/&gt;"/>
-                                            </td>
-                                            <td>
-                                                <div id="fobtNegativeTreatmentOptions">
-                                                    <obs conceptId="1126d661-35bf-4a04-9e85-633329d6fea5"
-                                                         answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
-                                                         answerLabel="Counsel on negative findings"
-                                                         style="checkbox"/>
-                                                </div>
-                                                <hr/>
-                                                <div id="fobtPositiveTreatmentOptions">
-                                                    <obs conceptId="1126d661-35bf-4a04-9e85-633329d6fea5"
-                                                         answerConceptId="82021d2c-d0c8-4547-a12a-13a3512ae1ca"
-                                                         answerLabel="Referred for colonoscopy"
-                                                         style="checkbox"/>
-                                                </div>
-                                            </td>
+                                            <th rowspan="4">Colorectal</th>
+                                            <obsgroup groupingConceptId="159362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                                <td>
+                                                    <obs id="colerectal-cancerType"
+                                                         conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="159362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Fecal Occult Blood Test"/>
+                                                </td>
+                                                <td>
+                                                    <obs conceptId="159362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabels="Positive,Negative" style="radio" id="fobt"
+                                                         answerSeparator="&lt;br/&gt;"/>
+                                                </td>
+                                                <td>
+                                                    <div id="fobtNegativeTreatmentOptions">
+                                                        <obs conceptId="1126d661-35bf-4a04-9e85-633329d6fea5"
+                                                             answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
+                                                             answerLabel="Counsel on negative findings"
+                                                             style="checkbox"/>
+                                                    </div>
+                                                    <hr/>
+                                                    <div id="fobtPositiveTreatmentOptions">
+                                                        <obs conceptId="1126d661-35bf-4a04-9e85-633329d6fea5"
+                                                             answerConceptId="82021d2c-d0c8-4547-a12a-13a3512ae1ca"
+                                                             answerLabel="Referred for colonoscopy"
+                                                             style="checkbox"/>
+                                                    </div>
+                                                </td>
+                                            </obsgroup>
                                         </tr>
-                                        <includeIf velocityTest="$patient.age > 45">
-                                        <tr id="colorectalColonoscopy">
+                                        <includeIf velocityTest="$patient.age > 0">
+                                            <tr id="colorectalColonoscopy">
+                                                <obsgroup groupingConceptId="4afab552-c642-45f9-b8b1-90b5f76a8c1a">
+                                                    <td>
+                                                        <obs id="colerectal-cancerType"
+                                                             conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="4afab552-c642-45f9-b8b1-90b5f76a8c1a"
+                                                             answerLabel="Colonoscopy"/>
+                                                    </td>
+                                                    <td>
+                                                        <obs conceptId="4afab552-c642-45f9-b8b1-90b5f76a8c1a"
+                                                             labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"
+                                                             answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148910AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118606AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,aed393be-c64e-4950-b4d6-9e1ce413d2ac"
+                                                             answerLabels="No abnormality,Polyps,Suspicoius for cancer,Inflammation,Other abnormalities"
+                                                             style="radio" id="colonoscopyFindings"/>
+                                                    </td>
+                                                    <td>
+                                                        <div id="colonoscopyNoAbnomaltyTreatmentOption">
+                                                            <obs conceptId="4afab552-c642-45f9-b8b1-90b5f76a8c1a"
+                                                                 answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
+                                                                 answerLabel="Counsel on negative findings"
+                                                                 style="checkbox"/>
+                                                        </div>
+                                                        <hr/>
+                                                        <div id="colonoscopyPolypsTreatmentOption">
+                                                            <obs conceptId="4afab552-c642-45f9-b8b1-90b5f76a8c1a"
+                                                                 answerConceptId="162907AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 answerLabel="Refer to surgical resection"
+                                                                 style="checkbox"/>
+                                                        </div>
+                                                        <br/>
+                                                        <div id="colonoscopySuspeciousAndInflamationTreatmentOption">
+                                                            <obs conceptId="4afab552-c642-45f9-b8b1-90b5f76a8c1a"
+                                                                 answerConceptId="9b892de0-0551-449c-88d1-470f6618943c"
+                                                                 answerLabel="Refer for biopsy" style="checkbox"/>
+                                                        </div>
+                                                        <hr/>
+                                                        <div id="colonoscancerOtherTreatmentOption">
+                                                            <obs conceptId="4afab552-c642-45f9-b8b1-90b5f76a8c1a"
+                                                                 answerConceptId="b4fe108d-c980-4451-99fb-6ef42e9a8dcc"
+                                                                 answerLabel="Referred for further management"
+                                                                 style="checkbox"/>
+                                                        </div>
+                                                    </td>
 
-                                            <th>Colonoscopy</th>
-                                            <td>
-                                                <!--<obs conceptId="161166AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                                                <!--labelText="&lt;br/&gt;" answerSeparator="&lt;br/&gt;"-->
-                                                <!--answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148910AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118606AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,aed393be-c64e-4950-b4d6-9e1ce413d2ac"-->
-                                                <!--answerLabels="No abnormality,Polyps,Suspicoius for cancer,Inflammation,Other abnormalities"-->
-                                                <!--style="radio" id="colonoscopyFindings"/>-->
-                                            </td>
-
-                                            <td>
-                                                <div id="colonoscopyNoAbnomaltyTreatmentOption">
-                                                    <obs conceptId="4afab552-c642-45f9-b8b1-90b5f76a8c1a"
-                                                         answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
-                                                         answerLabel="Counsel on negative findings"
-                                                         style="checkbox"/>
-                                                </div>
-                                                <hr/>
-                                                <div id="colonoscopyPolypsTreatmentOption">
-                                                    <obs conceptId="4afab552-c642-45f9-b8b1-90b5f76a8c1a"
-                                                         answerConceptId="162907AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabel="Refer to surgical resection"
-                                                         style="checkbox"/>
-                                                </div>
-                                                <br/>
-                                                <div id="colonoscopySuspeciousAndInflamationTreatmentOption">
-                                                    <obs conceptId="4afab552-c642-45f9-b8b1-90b5f76a8c1a"
-                                                         answerConceptId="9b892de0-0551-449c-88d1-470f6618943c"
-                                                         answerLabel="Refer for biopsy" style="checkbox"/>
-                                                </div>
-                                                <hr/>
-                                                <div id="colonoscancerOtherTreatmentOption">
-                                                    <obs conceptId="4afab552-c642-45f9-b8b1-90b5f76a8c1a"
-                                                         answerConceptId="b4fe108d-c980-4451-99fb-6ef42e9a8dcc"
-                                                         answerLabel="Referred for further management"
-                                                         style="checkbox"/>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                </obsgroup>
+                                            </tr>
                                         </includeIf>
                                     </includeIf>
                                     <includeIf velocityTest="$patient.age > 0 ">
@@ -2186,10 +2227,10 @@
                                             <th>EUA(Examination Under Anesthesia)</th>
                                             <td>
                                                 <obs conceptId="2048bd71-0fb0-4df1-a7e8-0ae6515d3e8b"
-                                                answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                answerLabels="Normal(+ve),Abnormal(-ve)" style="radio"
-                                                answerSeparator="&lt;br/&gt;"
-                                                id="euaFindings"/>
+                                                     answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerLabels="Normal(+ve),Abnormal(-ve)" style="radio"
+                                                     answerSeparator="&lt;br/&gt;"
+                                                     id="euaFindings"/>
                                             </td>
                                             <td>
                                                 <div id="euaNormalTreatmentOptions">
@@ -2294,38 +2335,38 @@
                                             </td>
                                         </tr>
                                         <includeIf velocityTest="$patient.age > 40">
-                                        <tr id="prostateTrus">
-                                            <th>Trans-rectal ultrasound biopsy(TRUS)</th>
-                                            <td>
-                                                <obs conceptId="1126AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6ca703a8-7461-4e7c-8703-b03b46aa981c,c49a8568-a56d-4c6e-afed-6be347c15fe0,158566AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,3d629987-ee66-43d8-8532-f41ba00dc493,2b7a0b08-ca77-4df7-9508-b9f8913c2066"
-                                                     answerLabels="Normal,Benign,Inflammation (acute/chronic),Prostatic intraepithelial neoplasia (PIN),Adenocarcinoma,Other malignancies"
-                                                     style="radio" answerSeparator="&lt;br/&gt;"
-                                                     id="transrectalFinding"/>
-                                            </td>
-                                            <td>
-                                                <div id="others">
-                                                    <obs conceptId="68cdacd6-9fb9-4713-9cdc-8b590e152fc0"
-                                                         answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
-                                                         answerLabel="Counseled for negative results"
-                                                         style="checkbox"/>
+                                            <tr id="prostateTrus">
+                                                <th>Trans-rectal ultrasound biopsy(TRUS)</th>
+                                                <td>
+                                                    <obs conceptId="1126AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6ca703a8-7461-4e7c-8703-b03b46aa981c,c49a8568-a56d-4c6e-afed-6be347c15fe0,158566AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,3d629987-ee66-43d8-8532-f41ba00dc493,2b7a0b08-ca77-4df7-9508-b9f8913c2066"
+                                                         answerLabels="Normal,Benign,Inflammation (acute/chronic),Prostatic intraepithelial neoplasia (PIN),Adenocarcinoma,Other malignancies"
+                                                         style="radio" answerSeparator="&lt;br/&gt;"
+                                                         id="transrectalFinding"/>
+                                                </td>
+                                                <td>
+                                                    <div id="others">
+                                                        <obs conceptId="68cdacd6-9fb9-4713-9cdc-8b590e152fc0"
+                                                             answerConceptId="f056993d-5726-4553-8625-295a1abb5a13"
+                                                             answerLabel="Counseled for negative results"
+                                                             style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="68cdacd6-9fb9-4713-9cdc-8b590e152fc0"
+                                                             answerConceptId="160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Routine follow-up" style="checkbox"/>
+                                                        <br/>
+                                                        Follow up Date
+                                                        <obs conceptId="23f45ac8-613a-4ece-b3d9-ac1697acc2ab"/>
+                                                    </div>
                                                     <br/>
-                                                    <obs conceptId="68cdacd6-9fb9-4713-9cdc-8b590e152fc0"
-                                                         answerConceptId="160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabel="Routine follow-up" style="checkbox"/>
-                                                    <br/>
-                                                    Follow up Date
-                                                    <obs conceptId="23f45ac8-613a-4ece-b3d9-ac1697acc2ab"/>
-                                                </div>
-                                                <br/>
-                                                <div id="transNormal">
-                                                    <obs conceptId="68cdacd6-9fb9-4713-9cdc-8b590e152fc0"
-                                                         answerConceptId="8cba5f27-830a-4c87-8be1-6fd8a8ed228a"
-                                                         answerLabel="Referred for further evaluation"
-                                                         style="checkbox"/>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                    <div id="transNormal">
+                                                        <obs conceptId="68cdacd6-9fb9-4713-9cdc-8b590e152fc0"
+                                                             answerConceptId="8cba5f27-830a-4c87-8be1-6fd8a8ed228a"
+                                                             answerLabel="Referred for further evaluation"
+                                                             style="checkbox"/>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         </includeIf>
                                     </includeIf>
                                     <tr id="oralVisual">
@@ -2450,7 +2491,8 @@
                         <tr>
                             <td rowspan="5">Follow-up Plan</td>
                             <td>Follow up date:
-                                <obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" id="follow-up-date"/>
+                                <obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
+                                     id="follow-up-date"/>
                             </td>
                         </tr>
                         <tr>
