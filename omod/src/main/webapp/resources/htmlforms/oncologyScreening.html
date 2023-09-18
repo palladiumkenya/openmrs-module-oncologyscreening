@@ -1344,6 +1344,78 @@
                     <span class="stepDesc">Follow Up<br/></span>
                 </a></li>
             </ul>
+
+                <script type="text/javascript">
+                    jq(function(){
+                        var cervicalCancerSelected = jq('#cervical-cancerType input:checkbox');
+                         if (cervicalCancerSelected.val() == 116023) {
+                            jq('#cervicalHpv').show();
+                            jq('#cervicalVia').show();
+                            jq('#cervicalPapSmear').show();
+                            jq('#cervicalColposcopy').show();
+                        } else {
+                            jq('#cervicalHpv').hide();
+                            jq('#cervicalVia').hide();
+                            jq('#cervicalPapSmear').hide();
+                            jq('#cervicalColposcopy').hide();
+                        }
+
+                        var breastCancerSelected = jq("#breast-cancerType input:checkbox");
+                        if (breastCancerSelected.val() == 116026) {
+                            jq('#breastCbe').show();
+                            jq('#breastUltrasound').show();
+                            jq('#breastMammograph').show();
+                        } else {
+                            jq('#breastCbe').hide();
+                            jq('#breastUltrasound').hide();
+                            jq('#breastMammograph').hide();
+                        }
+
+                        var colorectalCancerSelected = jq("#colerectal-cancerType input:checkbox");
+                        if (colorectalCancerSelected.val() == 133350) {
+                            jq('#colorectalFobt').show();
+                            jq('#colorectalColonoscopy').show();
+                        } else {
+                            jq('#colorectalFobt').hide();
+                            jq('#colorectalColonoscopy').hide();
+                        }
+
+                        var ratinoblastomaCancerSelected = jq("#retinoblastoma-cancerType input:checkbox");
+                        if (ratinoblastomaCancerSelected.val() == 127527) {
+                            jq('#retinoblastomaEua').show();
+                            jq('#retinoblastomaRb1').show();
+                        } else {
+                            jq('#retinoblastomaEua').hide();
+                            jq('#retinoblastomaRb1').hide();
+                        }
+
+                        var oralCancerSelected= jq("#oral-cancerType input:checkbox");
+                        if (oralCancerSelected.val() == 115355) {
+                            jq('#oralVisual').show();
+                            jq('#oralCytology').show();
+                            jq('#oralImaging').show();
+                            jq('#oralBiopsy').show();
+
+                        } else {
+                            jq('#oralVisual').hide();
+                            jq('#oralCytology').hide();
+                            jq('#oralImaging').hide();
+                            jq('#oralBiopsy').hide();
+                        }
+
+                        var prostateCancerSelected = jq("#prostate-cancerType input:checkbox");
+                        if (prostateCancerSelected.val() == 146221) {
+                            jq('#prostateDre').show();
+                            jq('#prostatePsa').show();
+                            jq('#prostateTrus').show();
+
+                        } else {
+                            jq('#prostateDre').hide();
+                            jq('#prostatePsa').hide();
+                            jq('#prostateTrus').hide();
+                        }
+                    });
+                </script>
         </ifMode>
 
         <div class="ke-form-content">
@@ -2267,7 +2339,6 @@
                                                              style="checkbox"/>
                                                     </div>
                                                 </td>
-
                                             </obsgroup>
                                         </tr>
                                         <tr id="retinoblastomaRb1">
