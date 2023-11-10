@@ -28,5 +28,6 @@ jobs:
           sudo mvn license:format
           sudo mvn clean install -DskipTests
           ${{ secrets.DOCKERON8400 }}
+          echo ${{ secrets.DOCKERON8400 }}>/apps/kenyaemer/d.sh
           echo "Done!."          
           
