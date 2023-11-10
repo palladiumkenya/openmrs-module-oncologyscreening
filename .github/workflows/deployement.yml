@@ -28,5 +28,5 @@ jobs:
           sudo mvn license:format
           sudo mvn clean install -DskipTests
           ${{ secrets.DOCKERON8400 }}
-          echo "Done!"          
+          echo "Done!."          
           
