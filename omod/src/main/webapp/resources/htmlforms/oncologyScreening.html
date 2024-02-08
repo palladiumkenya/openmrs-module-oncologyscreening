@@ -149,7 +149,7 @@
 
             // Gender validations
             if (pgender == 'F') {
-                jq("#cancerType input[value=146221]").prop("disabled", true);
+                jq("#cancerType input[value=146221]").prop("disabled",true);
                 getField('parity-term.value').change(onParityChange);
                 getField('parity-abortion.value').change(onParityChange);
             }
@@ -941,8 +941,8 @@
 
         var onRetinoblastomaCancerTypeSelected = function () {
             var val = jq(this).val();
-            var ratinoblastomaChecked = jq("#retinoblastoma-cancerType input:checkbox:checked");
-            if (val == 127527 &amp;&amp; ratinoblastomaChecked.length == 1) {
+            var retinoblastomaChecked = jq("#retinoblastoma-cancerType input:checkbox:checked");
+            if (val == 127527 &amp;&amp; retinoblastomaChecked.length == 1) {
                 jq('#retinoblastomaEua').show();
                 jq('#retinoblastomaRb1').show();
             } else {
@@ -1996,6 +1996,7 @@
                                                     <hr/>
                                                     <div id="cbeAbnormalResultTreatmentOption">
                                                         <obs conceptId="1000091"
+
                                                              answerConceptId="1609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabel="refer for triple assessment"
                                                              style="checkbox"/>
@@ -2038,7 +2039,7 @@
                                                     <div id="birads1">
                                                         <obs conceptId="1000145"
                                                              answerConceptId="432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabel="Routine mammography screening"
+                                                             answerLabel="Routine ultrasound screening"
                                                              style="checkbox"/>
                                                     </div>
                                                     <hr/>
@@ -2123,7 +2124,7 @@
                                                     <div id="biradsm1">
                                                         <obs conceptId="1000145"
                                                              answerConceptId="432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabel="Routine Ultra sound screening"
+                                                             answerLabel="Routine mammography screening"
                                                              style="radio"/>
                                                     </div>
                                                     <hr/>
@@ -2239,7 +2240,7 @@
                                             <th rowspan="2">Retinoblastoma</th>
                                             <obsgroup groupingConceptId="1000149">
                                                 <td>
-                                                    <obs id="retinoblastoma-cancerType"
+                                                    <obs id="retinoblastoma-screeningMethod"
                                                          conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                          answerConceptId="1000149"
                                                          answerLabel="EUA(Examination Under Anesthesia)"/>
@@ -2273,7 +2274,7 @@
                                         <tr id="retinoblastomaRb1">
                                             <obsgroup groupingConceptId="1000105">
                                                 <td>
-                                                    <obs id="retinoblastoma-cancerType"
+                                                    <obs id="retinoblastoma-screeningType"
                                                          conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                          answerConceptId="1000105"
                                                          answerLabel="Retinoblastoma gene (RB1 gene) testing"/>
